@@ -69,7 +69,7 @@ songs.forEach((song, idx) => {
     })
 
     oneSongDiv.addEventListener("click",()=>{
-        document.querySelector("body").style.backgroundColor=song.bodyBgColor;
+        // document.querySelector("body").style.backgroundColor=white;
         musicCard.style.backgroundColor=`${song.bgcolor}`;
         musicCardThumbnail.src = song.thumbnail;
         playMusic(song.audioPath);
