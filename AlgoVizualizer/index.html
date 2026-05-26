@@ -16,6 +16,7 @@
     --accent2: #ff6b35;
     --accent3: #39ff14;
     --accent4: #bf5fff;
+    --accent5: #ffd700;
     --muted: #3a4a5c;
     --text: #c9d5e0;
     --text-dim: #5a7080;
@@ -25,447 +26,229 @@
     --bar-sorted: #39ff14;
     --bar-pivot: #bf5fff;
     --bar-found: #39ff14;
-    --pointer: #ff6b35;
   }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { font-size: 16px; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'JetBrains Mono', monospace;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* BG grid */
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background-image:
-      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none; z-index: 0;
-  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{font-size:16px}
+  body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;min-height:100vh;overflow-x:hidden}
+  body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
 
   /* ── Header ── */
-  header {
-    position: relative; z-index: 10;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 18px 32px;
-    border-bottom: 1px solid var(--border);
-    background: rgba(8,11,16,0.95);
-    backdrop-filter: blur(12px);
-  }
-  .logo {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1.4rem; font-weight: 900;
-    color: var(--accent);
-    letter-spacing: 2px;
-    text-shadow: 0 0 20px rgba(0,212,255,0.5);
-  }
-  .logo span { color: var(--accent2); }
-  .status-bar {
-    display: flex; gap: 20px; align-items: center;
-    font-size: 0.7rem; color: var(--text-dim);
-  }
-  .status-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--accent3);
-    box-shadow: 0 0 8px var(--accent3);
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  header{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--border);background:rgba(8,11,16,.95);backdrop-filter:blur(12px)}
+  .logo{font-family:'Orbitron',sans-serif;font-size:1.4rem;font-weight:900;color:var(--accent);letter-spacing:2px;text-shadow:0 0 20px rgba(0,212,255,.5)}
+  .logo span{color:var(--accent2)}
+  .status-bar{display:flex;gap:20px;align-items:center;font-size:.7rem;color:var(--text-dim)}
+  .status-dot{width:8px;height:8px;border-radius:50%;background:var(--accent3);box-shadow:0 0 8px var(--accent3);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
   /* ── Layout ── */
-  .app {
-    position: relative; z-index: 1;
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    grid-template-rows: auto 1fr;
-    min-height: calc(100vh - 65px);
-  }
+  .app{position:relative;z-index:1;display:grid;grid-template-columns:280px 1fr;grid-template-rows:auto 1fr;min-height:calc(100vh - 65px)}
 
   /* ── Sidebar ── */
-  aside {
-    grid-row: 1 / -1;
-    background: var(--panel);
-    border-right: 1px solid var(--border);
-    padding: 24px 0;
-    overflow-y: auto;
-  }
-  .sidebar-section { margin-bottom: 8px; }
-  .sidebar-title {
-    font-size: 0.65rem; font-weight: 700;
-    letter-spacing: 3px; text-transform: uppercase;
-    color: var(--text-dim);
-    padding: 8px 24px; margin-bottom: 4px;
-  }
-  .algo-group { padding: 0 16px; margin-bottom: 4px; }
-  .algo-group-header {
-    display: flex; align-items: center; gap: 10px;
-    padding: 10px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.8rem; font-weight: 600;
-    color: var(--text-dim);
-    transition: all .2s;
-    user-select: none;
-  }
-  .algo-group-header:hover { background: rgba(0,212,255,0.05); color: var(--text); }
-  .algo-group-header .icon { font-size: 1rem; }
-  .algo-group-header .chevron {
-    margin-left: auto; transition: transform .3s;
-    font-size: 0.7rem;
-  }
-  .algo-group.open .chevron { transform: rotate(90deg); }
-  .algo-group-header.active-group { color: var(--accent); }
-  .algo-items { display: none; padding: 4px 0 4px 16px; }
-  .algo-group.open .algo-items { display: block; }
-  .algo-btn {
-    display: block; width: 100%;
-    padding: 8px 12px;
-    border: none; background: transparent;
-    color: var(--text-dim);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
-    text-align: left; cursor: pointer;
-    border-radius: 6px;
-    transition: all .2s;
-    border-left: 2px solid transparent;
-  }
-  .algo-btn:hover { color: var(--text); background: rgba(255,255,255,0.04); }
-  .algo-btn.active {
-    color: var(--accent);
-    border-left-color: var(--accent);
-    background: rgba(0,212,255,0.07);
-  }
+  aside{grid-row:1/-1;background:var(--panel);border-right:1px solid var(--border);padding:24px 0;overflow-y:auto}
+  .sidebar-section{margin-bottom:8px}
+  .sidebar-title{font-size:.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text-dim);padding:8px 24px;margin-bottom:4px}
+  .algo-group{padding:0 16px;margin-bottom:4px}
+  .algo-group-header{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;font-size:.8rem;font-weight:600;color:var(--text-dim);transition:all .2s;user-select:none}
+  .algo-group-header:hover{background:rgba(0,212,255,.05);color:var(--text)}
+  .algo-group-header .icon{font-size:1rem}
+  .algo-group-header .chevron{margin-left:auto;transition:transform .3s;font-size:.7rem}
+  .algo-group.open .chevron{transform:rotate(90deg)}
+  .algo-group-header.active-group{color:var(--accent)}
+  .algo-items{display:none;padding:4px 0 4px 16px}
+  .algo-group.open .algo-items{display:block}
+  .algo-btn{display:block;width:100%;padding:8px 12px;border:none;background:transparent;color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:.75rem;text-align:left;cursor:pointer;border-radius:6px;transition:all .2s;border-left:2px solid transparent}
+  .algo-btn:hover{color:var(--text);background:rgba(255,255,255,.04)}
+  .algo-btn.active{color:var(--accent);border-left-color:var(--accent);background:rgba(0,212,255,.07)}
 
-  /* Complexity badge */
-  .complexity {
-    margin: 16px 16px 0;
-    padding: 14px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    background: var(--card);
-  }
-  .complexity h4 {
-    font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase;
-    color: var(--text-dim); margin-bottom: 10px;
-  }
-  .comp-row {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 4px 0;
-    font-size: 0.72rem;
-  }
-  .comp-label { color: var(--text-dim); }
-  .comp-val { color: var(--accent); font-weight: 600; }
-  .comp-val.bad { color: var(--accent2); }
-  .comp-val.ok { color: #ffcc00; }
+  .complexity{margin:16px 16px 0;padding:14px;border:1px solid var(--border);border-radius:10px;background:var(--card)}
+  .complexity h4{font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px}
+  .comp-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:.72rem}
+  .comp-label{color:var(--text-dim)}
+  .comp-val{color:var(--accent);font-weight:600}
+  .comp-val.bad{color:var(--accent2)}
+  .comp-val.ok{color:#ffcc00}
 
   /* ── Main ── */
-  main { padding: 28px 32px; display: flex; flex-direction: column; gap: 24px; }
+  main{padding:28px 32px;display:flex;flex-direction:column;gap:24px}
 
-  /* Controls */
-  .controls-panel {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 20px 24px;
-    display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end;
-  }
-  .ctrl-group { display: flex; flex-direction: column; gap: 6px; }
-  .ctrl-label {
-    font-size: 0.65rem; letter-spacing: 2px;
-    text-transform: uppercase; color: var(--text-dim);
-  }
-  input[type="text"], select {
-    background: var(--card);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem;
-    padding: 8px 12px;
-    border-radius: 8px;
-    outline: none;
-    transition: border-color .2s;
-    min-width: 180px;
-  }
-  input[type="text"]:focus, select:focus { border-color: var(--accent); }
-  select option { background: var(--card); }
+  /* ── Controls ── */
+  .controls-panel{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px 24px;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end}
+  .ctrl-group{display:flex;flex-direction:column;gap:6px}
+  .ctrl-label{font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim)}
+  input[type="text"],select{background:var(--card);border:1px solid var(--border);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.8rem;padding:8px 12px;border-radius:8px;outline:none;transition:border-color .2s;min-width:180px}
+  input[type="text"]:focus,select:focus{border-color:var(--accent)}
+  select option{background:var(--card)}
+  .speed-wrap{display:flex;align-items:center;gap:10px}
+  input[type="range"]{-webkit-appearance:none;width:100px;height:4px;background:var(--border);border-radius:2px;outline:none}
+  input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 0 8px var(--accent)}
+  .speed-val{font-size:.75rem;color:var(--accent);min-width:30px}
+  .btn{padding:9px 22px;border-radius:8px;border:none;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:600;letter-spacing:1px;transition:all .2s}
+  .btn-primary{background:var(--accent);color:var(--bg);box-shadow:0 0 16px rgba(0,212,255,.3)}
+  .btn-primary:hover{box-shadow:0 0 28px rgba(0,212,255,.55);transform:translateY(-1px)}
+  .btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none}
+  .btn-secondary{background:transparent;border:1px solid var(--border);color:var(--text-dim)}
+  .btn-secondary:hover{border-color:var(--accent);color:var(--accent)}
+  .btn-danger{background:transparent;border:1px solid var(--accent2);color:var(--accent2)}
+  .btn-danger:hover{background:rgba(255,107,53,.1)}
 
-  .speed-wrap { display: flex; align-items: center; gap: 10px; }
-  input[type="range"] {
-    -webkit-appearance: none;
-    width: 100px; height: 4px;
-    background: var(--border);
-    border-radius: 2px; outline: none;
-  }
-  input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 14px; height: 14px;
-    border-radius: 50%;
-    background: var(--accent);
-    cursor: pointer;
-    box-shadow: 0 0 8px var(--accent);
-  }
-  .speed-val { font-size: 0.75rem; color: var(--accent); min-width: 30px; }
+  /* ── Viz Panel (sorting/searching) ── */
+  .viz-panel{flex:1;background:var(--panel);border:1px solid var(--border);border-radius:14px;overflow:hidden;min-height:380px;position:relative}
+  .viz-header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+  .viz-title{font-family:'Orbitron',sans-serif;font-size:.85rem;font-weight:700;color:var(--accent);text-shadow:0 0 12px rgba(0,212,255,.4)}
+  .viz-stats{display:flex;gap:20px}
+  .stat-item{font-size:.7rem}
+  .stat-label{color:var(--text-dim)}
+  .stat-val{color:var(--accent3);font-weight:700}
+  #bar-container{width:100%;height:300px;display:flex;align-items:flex-end;gap:3px;padding:20px 20px 10px;position:relative}
+  .bar-wrap{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;flex:1;height:100%;position:relative}
+  .bar{width:100%;background:var(--bar-default);border-radius:4px 4px 0 0;transition:background .15s;position:relative;border:1px solid rgba(255,255,255,.05);min-height:4px}
+  .bar-val{font-size:.55rem;color:var(--text-dim);margin-top:4px;text-align:center}
+  .bar.comparing{background:var(--bar-compare)!important;box-shadow:0 0 12px rgba(255,107,53,.5)}
+  .bar.swapping{background:var(--bar-swap)!important;box-shadow:0 0 12px rgba(0,212,255,.5)}
+  .bar.sorted{background:var(--bar-sorted)!important;box-shadow:0 0 8px rgba(57,255,20,.4)}
+  .bar.pivot{background:var(--bar-pivot)!important;box-shadow:0 0 12px rgba(191,95,255,.5)}
+  .bar.found{background:var(--bar-found)!important;box-shadow:0 0 16px rgba(57,255,20,.7)}
+  #search-container{display:none;flex-wrap:wrap;gap:6px;padding:30px 20px;align-items:center;justify-content:center}
+  .search-cell{width:54px;height:54px;display:flex;align-items:center;justify-content:center;border:2px solid var(--border);border-radius:8px;font-size:.9rem;font-weight:700;color:var(--text);background:var(--card);position:relative;transition:all .2s;flex-direction:column}
+  .cell-idx{position:absolute;bottom:-18px;font-size:.55rem;color:var(--text-dim)}
+  .search-cell.checking{border-color:var(--bar-compare);background:rgba(255,107,53,.15);color:var(--accent2)}
+  .search-cell.found-cell{border-color:var(--accent3);background:rgba(57,255,20,.15);color:var(--accent3)}
+  .search-cell.eliminated{border-color:var(--muted);opacity:.35}
+  .search-cell.mid-cell{border-color:var(--accent4);background:rgba(191,95,255,.15);color:var(--accent4)}
+  .search-cell.range-cell{border-color:var(--accent);background:rgba(0,212,255,.08)}
+  .pointer-arrow{position:absolute;top:-28px;left:50%;transform:translateX(-50%);font-size:.6rem;font-weight:700;white-space:nowrap;pointer-events:none}
+  .ptr-low{color:var(--accent)}
+  .ptr-high{color:var(--accent2)}
+  .ptr-mid{color:var(--accent4)}
+  .ptr-target{color:var(--accent3)}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;padding:10px 20px;border-top:1px solid var(--border)}
+  .legend-item{display:flex;align-items:center;gap:6px;font-size:.68rem;color:var(--text-dim)}
+  .legend-dot{width:10px;height:10px;border-radius:2px}
+  #welcome{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--text-dim);text-align:center}
+  #welcome .big-icon{font-size:3rem}
+  #welcome h2{font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--accent)}
+  #welcome p{font-size:.78rem;max-width:300px;line-height:1.6}
+  #step-info{position:absolute;top:10px;right:14px;background:rgba(0,0,0,.7);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:.7rem;color:var(--accent);display:none}
 
-  .btn {
-    padding: 9px 22px;
-    border-radius: 8px;
-    border: none; cursor: pointer;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem; font-weight: 600;
-    letter-spacing: 1px;
-    transition: all .2s;
-  }
-  .btn-primary {
-    background: var(--accent);
-    color: var(--bg);
-    box-shadow: 0 0 16px rgba(0,212,255,0.3);
-  }
-  .btn-primary:hover { box-shadow: 0 0 28px rgba(0,212,255,0.55); transform: translateY(-1px); }
-  .btn-primary:disabled { opacity: .4; cursor: not-allowed; transform: none; }
-  .btn-secondary {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text-dim);
-  }
-  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
-  .btn-danger {
-    background: transparent;
-    border: 1px solid var(--accent2);
-    color: var(--accent2);
-  }
-  .btn-danger:hover { background: rgba(255,107,53,0.1); }
+  /* ── Log & Pseudo ── */
+  .log-panel{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px 20px;max-height:160px;overflow-y:auto}
+  .log-panel::-webkit-scrollbar{width:4px}
+  .log-panel::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+  .log-title{font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px}
+  #log-entries{display:flex;flex-direction:column;gap:3px}
+  .log-entry{font-size:.72rem;color:var(--text-dim);padding:2px 0;animation:fadeIn .3s ease}
+  .log-entry.highlight{color:var(--accent)}
+  .log-entry.success{color:var(--accent3)}
+  .log-entry.warn{color:var(--accent2)}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  .pseudo-panel{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px 20px;overflow:auto;max-height:200px}
+  .pseudo-title{font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px}
+  #pseudo-code{font-size:.72rem;line-height:1.9;white-space:pre;color:var(--text-dim)}
+  #pseudo-code .kw{color:var(--accent4)}
+  #pseudo-code .fn{color:var(--accent2)}
+  #pseudo-code .cm{color:var(--muted)}
 
-  /* Visualization area */
-  .viz-panel {
-    flex: 1;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    overflow: hidden;
-    min-height: 380px;
-    position: relative;
-  }
-  .viz-header {
-    padding: 14px 20px;
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .viz-title {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.85rem; font-weight: 700;
-    color: var(--accent);
-    text-shadow: 0 0 12px rgba(0,212,255,0.4);
-  }
-  .viz-stats { display: flex; gap: 20px; }
-  .stat-item { font-size: 0.7rem; }
-  .stat-label { color: var(--text-dim); }
-  .stat-val { color: var(--accent3); font-weight: 700; }
+  /* ── DP SECTION ── */
+  .section-divider{position:relative;z-index:1;border-top:2px solid var(--border);margin:0;padding:32px 32px 0;background:var(--bg)}
+  .section-header{display:flex;align-items:center;gap:16px;margin-bottom:24px}
+  .section-badge{font-family:'Orbitron',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:3px;padding:6px 14px;border-radius:6px;text-transform:uppercase}
+  .badge-dp{background:rgba(191,95,255,.15);border:1px solid var(--accent4);color:var(--accent4)}
+  .badge-graph{background:rgba(0,212,255,.12);border:1px solid var(--accent);color:var(--accent)}
+  .section-title-text{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;color:var(--text)}
 
-  /* Bar chart */
-  #bar-container {
-    width: 100%; height: 300px;
-    display: flex; align-items: flex-end;
-    gap: 3px;
-    padding: 20px 20px 10px;
-    position: relative;
-  }
-  .bar-wrap {
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: flex-end;
-    flex: 1; height: 100%;
-    position: relative;
-  }
-  .bar {
-    width: 100%;
-    background: var(--bar-default);
-    border-radius: 4px 4px 0 0;
-    transition: background 0.15s;
-    position: relative;
-    border: 1px solid rgba(255,255,255,0.05);
-    min-height: 4px;
-  }
-  .bar-val {
-    font-size: 0.55rem; color: var(--text-dim);
-    margin-top: 4px; text-align: center;
-  }
-  /* bar states */
-  .bar.comparing { background: var(--bar-compare) !important; box-shadow: 0 0 12px rgba(255,107,53,0.5); }
-  .bar.swapping   { background: var(--bar-swap)    !important; box-shadow: 0 0 12px rgba(0,212,255,0.5); }
-  .bar.sorted     { background: var(--bar-sorted)  !important; box-shadow: 0 0 8px rgba(57,255,20,0.4); }
-  .bar.pivot      { background: var(--bar-pivot)   !important; box-shadow: 0 0 12px rgba(191,95,255,0.5); }
-  .bar.found      { background: var(--bar-found)   !important; box-shadow: 0 0 16px rgba(57,255,20,0.7); }
+  /* dp concept tabs */
+  .tab-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+  .tab-btn{padding:8px 18px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:.75rem;cursor:pointer;transition:all .2s}
+  .tab-btn:hover{border-color:var(--accent4);color:var(--accent4)}
+  .tab-btn.tab-active{background:rgba(191,95,255,.15);border-color:var(--accent4);color:var(--accent4)}
+  .tab-btn.tab-graph{border-color:var(--border)}
+  .tab-btn.tab-graph:hover{border-color:var(--accent);color:var(--accent)}
+  .tab-btn.tab-graph.tab-active{background:rgba(0,212,255,.12);border-color:var(--accent);color:var(--accent)}
+  .tab-content{display:none}
+  .tab-content.active{display:block}
 
-  /* Search array row */
-  #search-container {
-    display: none;
-    flex-wrap: wrap;
-    gap: 6px;
-    padding: 30px 20px;
-    align-items: center;
-    justify-content: center;
-  }
-  .search-cell {
-    width: 54px; height: 54px;
-    display: flex; align-items: center; justify-content: center;
-    border: 2px solid var(--border);
-    border-radius: 8px;
-    font-size: 0.9rem; font-weight: 700;
-    color: var(--text);
-    background: var(--card);
-    position: relative;
-    transition: all 0.2s;
-    flex-direction: column;
-  }
-  .cell-idx {
-    position: absolute; bottom: -18px;
-    font-size: 0.55rem; color: var(--text-dim);
-  }
-  .search-cell.checking { border-color: var(--bar-compare); background: rgba(255,107,53,0.15); color: var(--accent2); }
-  .search-cell.found-cell { border-color: var(--accent3); background: rgba(57,255,20,0.15); color: var(--accent3); }
-  .search-cell.eliminated { border-color: var(--muted); opacity: 0.35; }
-  .search-cell.mid-cell { border-color: var(--accent4); background: rgba(191,95,255,0.15); color: var(--accent4); }
-  .search-cell.range-cell { border-color: var(--accent); background: rgba(0,212,255,0.08); }
+  /* canvas viz */
+  .canvas-panel{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;position:relative}
+  .canvas-header{padding:12px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .canvas-title{font-size:.8rem;font-weight:700;color:var(--accent4)}
+  .canvas-title.graph-title{color:var(--accent)}
+  canvas{display:block;width:100%;background:transparent}
+  .canvas-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .mini-label{font-size:.65rem;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase}
+  .info-box{margin-top:16px;padding:14px;background:var(--panel);border:1px solid var(--border);border-radius:10px;font-size:.75rem;line-height:1.8;color:var(--text-dim)}
+  .info-box strong{color:var(--accent4);font-weight:600}
+  .info-box .acc{color:var(--accent3);font-weight:700}
+  .info-box.graph-info strong{color:var(--accent)}
 
-  /* pointer arrows */
-  .pointer-arrow {
-    position: absolute; top: -28px; left: 50%;
-    transform: translateX(-50%);
-    font-size: 0.6rem; font-weight: 700;
-    white-space: nowrap;
-    pointer-events: none;
-  }
-  .ptr-low  { color: var(--accent); }
-  .ptr-high { color: var(--accent2); }
-  .ptr-mid  { color: var(--accent4); }
-  .ptr-target { color: var(--accent3); }
+  /* DP table grid */
+  .dp-table-wrap{overflow:auto;margin-top:12px}
+  table.dp-table{border-collapse:collapse;font-size:.72rem;white-space:nowrap}
+  table.dp-table th{background:rgba(191,95,255,.1);color:var(--accent4);padding:6px 10px;border:1px solid var(--border);text-align:center}
+  table.dp-table td{padding:6px 10px;border:1px solid var(--border);text-align:center;color:var(--text-dim);transition:all .3s}
+  table.dp-table td.active-cell{background:rgba(0,212,255,.15);color:var(--accent);font-weight:700}
+  table.dp-table td.done-cell{background:rgba(57,255,20,.08);color:var(--accent3)}
+  table.dp-table td.highlight-cell{background:rgba(191,95,255,.2);color:var(--accent4);font-weight:700}
+  table.dp-table.graph-table th{background:rgba(0,212,255,.1);color:var(--accent)}
 
-  /* Log panel */
-  .log-panel {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 16px 20px;
-    max-height: 160px;
-    overflow-y: auto;
-  }
-  .log-panel::-webkit-scrollbar { width: 4px; }
-  .log-panel::-webkit-scrollbar-track { background: transparent; }
-  .log-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-  .log-title {
-    font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase;
-    color: var(--text-dim); margin-bottom: 10px;
-  }
-  #log-entries { display: flex; flex-direction: column; gap: 3px; }
-  .log-entry {
-    font-size: 0.72rem; color: var(--text-dim);
-    padding: 2px 0;
-    animation: fadeIn .3s ease;
-  }
-  .log-entry.highlight { color: var(--accent); }
-  .log-entry.success { color: var(--accent3); }
-  .log-entry.warn { color: var(--accent2); }
-  @keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:none} }
+  /* graph canvas cells */
+  .graph-node{position:absolute;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;border:2px solid;transition:all .3s;cursor:default}
+  .node-default{background:var(--card);border-color:var(--border);color:var(--text-dim)}
+  .node-visited{background:rgba(0,212,255,.2);border-color:var(--accent);color:var(--accent)}
+  .node-current{background:rgba(255,107,53,.25);border-color:var(--accent2);color:var(--accent2);box-shadow:0 0 14px rgba(255,107,53,.5)}
+  .node-done{background:rgba(57,255,20,.15);border-color:var(--accent3);color:var(--accent3)}
+  .node-source{background:rgba(191,95,255,.2);border-color:var(--accent4);color:var(--accent4)}
+  .node-sink{background:rgba(255,215,0,.15);border-color:var(--accent5);color:var(--accent5)}
 
-  /* Legend */
-  .legend {
-    display: flex; flex-wrap: wrap; gap: 14px;
-    padding: 10px 20px;
-    border-top: 1px solid var(--border);
-  }
-  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.68rem; color: var(--text-dim); }
-  .legend-dot {
-    width: 10px; height: 10px; border-radius: 2px;
-  }
+  /* nqueens board */
+  .board-wrap{display:flex;justify-content:center;padding:16px}
+  .nq-board{border:2px solid var(--border);border-radius:4px;overflow:hidden;display:inline-block}
+  .nq-row{display:flex}
+  .nq-cell{width:46px;height:46px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;transition:all .3s}
+  .nq-light{background:#1a2535}
+  .nq-dark{background:#0f1825}
+  .nq-queen{color:var(--accent3);text-shadow:0 0 8px var(--accent3);animation:queenPop .3s ease}
+  .nq-conflict{background:rgba(255,107,53,.2)!important;color:var(--accent2)}
+  .nq-try{background:rgba(0,212,255,.1)!important}
+  @keyframes queenPop{from{transform:scale(0)}to{transform:scale(1)}}
 
-  /* pseudo-code panel */
-  .pseudo-panel {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 16px 20px;
-  }
-  .pseudo-title {
-    font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase;
-    color: var(--text-dim); margin-bottom: 10px;
-  }
-  #pseudo-code {
-    font-size: 0.72rem; line-height: 1.9;
-    white-space: pre;
-    color: var(--text-dim);
-  }
-  #pseudo-code .hl { color: var(--accent); background: rgba(0,212,255,0.1); padding: 0 4px; border-radius: 2px; }
-  #pseudo-code .kw { color: var(--accent4); }
-  #pseudo-code .fn { color: var(--accent2); }
-  #pseudo-code .cm { color: var(--muted); }
+  /* graph coloring */
+  .coloring-wrap{display:flex;justify-content:center;padding:16px}
+  #gc-canvas{border-radius:10px;background:var(--card)}
 
-  /* welcome message */
-  #welcome {
-    position: absolute; inset: 0;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 12px; color: var(--text-dim);
-    text-align: center;
-  }
-  #welcome .big-icon { font-size: 3rem; }
-  #welcome h2 { font-family:'Orbitron',sans-serif; font-size:1rem; color:var(--accent); }
-  #welcome p { font-size: 0.78rem; max-width: 300px; line-height: 1.6; }
+  /* flow network */
+  #flow-canvas{border-radius:10px;background:var(--card)}
 
-  /* step info */
-  #step-info {
-    position: absolute; top: 10px; right: 14px;
-    background: rgba(0,0,0,0.7);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 6px 12px;
-    font-size: 0.7rem;
-    color: var(--accent);
-    display: none;
-  }
+  /* concept comparison panel */
+  .concept-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:12px}
+  .concept-card{padding:14px;border:1px solid var(--border);border-radius:10px;background:var(--panel)}
+  .concept-card h4{font-size:.72rem;color:var(--accent4);margin-bottom:8px;letter-spacing:1px;text-transform:uppercase}
+  .concept-card p{font-size:.7rem;color:var(--text-dim);line-height:1.7}
+  .concept-card.graph-card h4{color:var(--accent)}
+  @media(max-width:700px){.concept-grid{grid-template-columns:1fr}}
+
+  /* running badge */
+  .running-badge{display:none;align-items:center;gap:6px;font-size:.65rem;color:var(--accent2);font-weight:700;letter-spacing:1px}
+  .running-badge.active{display:flex}
+  .running-badge::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--accent2);animation:pulse .6s infinite}
 
   /* Responsive */
-  @media (max-width: 900px) {
-    .app { grid-template-columns: 1fr; }
-    aside {
-      grid-row: auto;
-      border-right: none;
-      border-bottom: 1px solid var(--border);
-      padding: 12px 0;
-    }
-    .algo-items { display: none; }
-    .algo-group.open .algo-items { display: block; }
-    main { padding: 16px; }
-    .controls-panel { flex-direction: column; }
-    input[type="text"], select { min-width: auto; width: 100%; }
+  @media(max-width:900px){
+    .app{grid-template-columns:1fr}
+    aside{grid-row:auto;border-right:none;border-bottom:1px solid var(--border);padding:12px 0}
+    .algo-items{display:none}
+    .algo-group.open .algo-items{display:block}
+    main{padding:16px}
+    .controls-panel{flex-direction:column}
+    input[type="text"],select{min-width:auto;width:100%}
+    .section-divider{padding:20px 16px 0}
   }
-  @media (max-width: 600px) {
-    header { padding: 14px 16px; }
-    .logo { font-size: 1.1rem; }
-    .status-bar { display: none; }
+  @media(max-width:600px){
+    header{padding:14px 16px}
+    .logo{font-size:1.1rem}
+    .status-bar{display:none}
   }
-
-  /* scrollbar */
-  aside::-webkit-scrollbar { width: 4px; }
-  aside::-webkit-scrollbar-thumb { background: var(--border); }
-
-  /* running indicator */
-  .running-badge {
-    display: none;
-    align-items: center; gap: 6px;
-    font-size: 0.65rem; color: var(--accent2);
-    font-weight: 700; letter-spacing: 1px;
-  }
-  .running-badge.active { display: flex; }
-  .running-badge::before {
-    content:'';
-    width:7px; height:7px; border-radius:50%;
-    background: var(--accent2);
-    animation: pulse 0.6s infinite;
-  }
+  aside::-webkit-scrollbar{width:4px}
+  aside::-webkit-scrollbar-thumb{background:var(--border)}
 </style>
 </head>
 <body>
@@ -475,21 +258,18 @@
   <div class="status-bar">
     <div class="status-dot"></div>
     <span>SYSTEM ONLINE</span>
-    <span id="runtime-display">v2.0</span>
+    <span>v3.0</span>
   </div>
 </header>
 
 <div class="app">
-  <!-- Sidebar -->
+  <!-- ── Sidebar ── -->
   <aside>
     <div class="sidebar-section">
       <div class="sidebar-title">Algorithms</div>
-
-      <!-- Sorting Group -->
       <div class="algo-group open" id="grp-sort">
         <div class="algo-group-header active-group" onclick="toggleGroup('grp-sort')">
-          <span class="icon">⬆</span> Sorting
-          <span class="chevron">▶</span>
+          <span class="icon">⬆</span> Sorting <span class="chevron">▶</span>
         </div>
         <div class="algo-items">
           <button class="algo-btn active" onclick="selectAlgo('bubble')">Bubble Sort</button>
@@ -501,12 +281,9 @@
           <button class="algo-btn" onclick="selectAlgo('shell')">Shell Sort</button>
         </div>
       </div>
-
-      <!-- Searching Group -->
       <div class="algo-group" id="grp-search">
         <div class="algo-group-header" onclick="toggleGroup('grp-search')">
-          <span class="icon">🔍</span> Searching
-          <span class="chevron">▶</span>
+          <span class="icon">🔍</span> Searching <span class="chevron">▶</span>
         </div>
         <div class="algo-items">
           <button class="algo-btn" onclick="selectAlgo('linear')">Linear Search</button>
@@ -516,9 +293,34 @@
           <button class="algo-btn" onclick="selectAlgo('exponential')">Exponential Search</button>
         </div>
       </div>
+      <div class="algo-group" id="grp-dp">
+        <div class="algo-group-header" onclick="toggleGroup('grp-dp');scrollToSection('dp-section')">
+          <span class="icon" style="color:var(--accent4)">◈</span> <span style="color:var(--accent4)">Dynamic Programming</span> <span class="chevron">▶</span>
+        </div>
+        <div class="algo-items">
+          <button class="algo-btn" onclick="scrollToSection('dp-section');openDpTab('dp-concepts')">Concepts & Comparison</button>
+          <button class="algo-btn" onclick="scrollToSection('dp-section');openDpTab('dp-fib')">Fibonacci (DP)</button>
+          <button class="algo-btn" onclick="scrollToSection('dp-section');openDpTab('dp-lcs')">Longest Common Subseq.</button>
+          <button class="algo-btn" onclick="scrollToSection('dp-section');openDpTab('dp-mcm')">Matrix Chain Mult.</button>
+          <button class="algo-btn" onclick="scrollToSection('dp-section');openDpTab('dp-knapsack')">0/1 Knapsack</button>
+          <button class="algo-btn" onclick="scrollToSection('dp-section');openDpTab('dp-nqueens')">N-Queens (Backtrack)</button>
+          <button class="algo-btn" onclick="scrollToSection('dp-section');openDpTab('dp-coloring')">Graph Coloring (BT)</button>
+        </div>
+      </div>
+      <div class="algo-group" id="grp-graph">
+        <div class="algo-group-header" onclick="toggleGroup('grp-graph');scrollToSection('graph-section')">
+          <span class="icon" style="color:var(--accent)">⬡</span> <span style="color:var(--accent)">Graph Algorithms</span> <span class="chevron">▶</span>
+        </div>
+        <div class="algo-items">
+          <button class="algo-btn" onclick="scrollToSection('graph-section');openGraphTab('g-bfs')">BFS</button>
+          <button class="algo-btn" onclick="scrollToSection('graph-section');openGraphTab('g-dfs')">DFS</button>
+          <button class="algo-btn" onclick="scrollToSection('graph-section');openGraphTab('g-topo')">Topological Sort</button>
+          <button class="algo-btn" onclick="scrollToSection('graph-section');openGraphTab('g-scc')">Strongly Connected Comp.</button>
+          <button class="algo-btn" onclick="scrollToSection('graph-section');openGraphTab('g-floyd')">Floyd-Warshall</button>
+          <button class="algo-btn" onclick="scrollToSection('graph-section');openGraphTab('g-flow')">Ford-Fulkerson (Max-Flow)</button>
+        </div>
+      </div>
     </div>
-
-    <!-- Complexity box -->
     <div class="complexity">
       <h4>Complexity</h4>
       <div class="comp-row"><span class="comp-label">Best</span><span class="comp-val" id="c-best">—</span></div>
@@ -529,13 +331,13 @@
     </div>
   </aside>
 
-  <!-- Main -->
+  <!-- ── Main ── -->
   <main>
     <!-- Controls -->
     <div class="controls-panel">
       <div class="ctrl-group">
         <div class="ctrl-label">Array Input</div>
-        <input type="text" id="array-input" placeholder="e.g. 34, 7, 23, 32, 5, 62" value="38, 27, 43, 3, 9, 82, 10"/>
+        <input type="text" id="array-input" placeholder="e.g. 34,7,23,32,5" value="38,27,43,3,9,82,10"/>
       </div>
       <div class="ctrl-group" id="target-group" style="display:none">
         <div class="ctrl-label">Search Target</div>
@@ -563,7 +365,7 @@
       <div class="running-badge" id="running-badge">RUNNING</div>
     </div>
 
-    <!-- Visualization Panel -->
+    <!-- Viz Panel -->
     <div class="viz-panel">
       <div class="viz-header">
         <div class="viz-title" id="viz-title">SELECT AN ALGORITHM</div>
@@ -572,17 +374,14 @@
           <div class="stat-item"><span class="stat-label">Swaps: </span><span class="stat-val" id="stat-swp">0</span></div>
         </div>
       </div>
-
       <div id="welcome">
         <div class="big-icon">⚙</div>
         <h2>ALGORITHM VISUALIZER</h2>
-        <p>Choose an algorithm from the sidebar, enter your array, and click <strong>Visualize</strong> to watch it in action.</p>
+        <p>Choose an algorithm from the sidebar and click <strong>Visualize</strong>. Scroll down for DP & Graph sections.</p>
       </div>
-
       <div id="bar-container"></div>
       <div id="search-container"></div>
       <div id="step-info">Step <span id="step-num">0</span></div>
-
       <div class="legend" id="legend">
         <div class="legend-item"><div class="legend-dot" style="background:var(--bar-default)"></div>Default</div>
         <div class="legend-item"><div class="legend-dot" style="background:var(--bar-compare)"></div>Comparing</div>
@@ -593,14 +392,12 @@
       </div>
     </div>
 
-    <!-- Bottom row -->
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-      <!-- Log -->
+    <!-- Log + Pseudo -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
       <div class="log-panel">
         <div class="log-title">Execution Log</div>
         <div id="log-entries"><div class="log-entry">// Waiting for input...</div></div>
       </div>
-      <!-- Pseudo Code -->
       <div class="pseudo-panel">
         <div class="pseudo-title">Pseudo Code</div>
         <pre id="pseudo-code">// Select an algorithm to view its pseudocode</pre>
@@ -609,990 +406,1449 @@
   </main>
 </div>
 
+<!-- ════════════════════════════════════════════
+     DP SECTION
+═══════════════════════════════════════════════ -->
+<div class="section-divider" id="dp-section">
+  <div class="section-header">
+    <span class="section-badge badge-dp">◈ Dynamic Programming</span>
+    <span class="section-title-text">DP Concepts & Visualizations</span>
+  </div>
+
+  <div class="tab-bar" id="dp-tab-bar">
+    <button class="tab-btn tab-active" onclick="openDpTab('dp-concepts')">Concepts</button>
+    <button class="tab-btn" onclick="openDpTab('dp-fib')">Fibonacci</button>
+    <button class="tab-btn" onclick="openDpTab('dp-lcs')">LCS</button>
+    <button class="tab-btn" onclick="openDpTab('dp-mcm')">Matrix Chain</button>
+    <button class="tab-btn" onclick="openDpTab('dp-knapsack')">0/1 Knapsack</button>
+    <button class="tab-btn" onclick="openDpTab('dp-nqueens')">N-Queens</button>
+    <button class="tab-btn" onclick="openDpTab('dp-coloring')">Graph Coloring</button>
+  </div>
+
+  <!-- CONCEPTS TAB -->
+  <div class="tab-content active" id="dp-concepts">
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h4>Principle of Optimality</h4>
+        <p>An optimal solution to a problem contains optimal solutions to its subproblems. If the global solution is optimal, every sub-path must also be optimal. This is the <strong style="color:var(--accent4)">foundation of DP</strong>.</p>
+      </div>
+      <div class="concept-card">
+        <h4>Overlapping Subproblems</h4>
+        <p>The same subproblems are solved repeatedly. DP stores results in a table (<strong style="color:var(--accent4)">memoization</strong> top-down or <strong style="color:var(--accent4)">tabulation</strong> bottom-up) to avoid redundant computation.</p>
+      </div>
+      <div class="concept-card">
+        <h4>DP vs Divide & Conquer</h4>
+        <p><strong style="color:var(--accent4)">D&C:</strong> subproblems are independent (Merge Sort, Quick Sort). <strong style="color:var(--accent3)">DP:</strong> subproblems overlap and share results. DP trades space for time efficiency.</p>
+      </div>
+    </div>
+    <div class="canvas-panel" style="margin-top:16px">
+      <div class="canvas-header">
+        <div class="canvas-title">Fibonacci Overlapping Subproblems — Call Tree</div>
+        <div class="canvas-controls">
+          <span class="mini-label">n =</span>
+          <select id="fib-tree-n" onchange="drawFibTree()" style="min-width:60px;width:60px">
+            <option value="5">5</option><option value="6" selected>6</option><option value="7">7</option>
+          </select>
+        </div>
+      </div>
+      <canvas id="fib-tree-canvas" height="240"></canvas>
+    </div>
+    <div class="info-box">
+      <strong>Key Insight:</strong> fib(6) calls fib(4) twice, fib(3) three times, etc. DP caches each result → reduces O(2ⁿ) to <span class="acc">O(n)</span> time.
+    </div>
+  </div>
+
+  <!-- FIBONACCI TAB -->
+  <div class="tab-content" id="dp-fib">
+    <div class="canvas-panel">
+      <div class="canvas-header">
+        <div class="canvas-title">Fibonacci DP Table (Bottom-Up)</div>
+        <div class="canvas-controls">
+          <span class="mini-label">n =</span>
+          <input type="number" id="fib-n" value="10" min="2" max="20" style="width:60px;min-width:60px"/>
+          <button class="btn btn-primary" style="padding:6px 16px;font-size:.72rem" onclick="runFibDP()">▶ Run</button>
+        </div>
+      </div>
+      <div style="padding:16px">
+        <div class="dp-table-wrap"><table class="dp-table" id="fib-table"></table></div>
+      </div>
+    </div>
+    <div class="info-box" id="fib-info">Enter n and click Run to watch DP table fill in step by step.</div>
+  </div>
+
+  <!-- LCS TAB -->
+  <div class="tab-content" id="dp-lcs">
+    <div class="canvas-panel">
+      <div class="canvas-header">
+        <div class="canvas-title">Longest Common Subsequence — DP Table</div>
+        <div class="canvas-controls">
+          <span class="mini-label">S1</span>
+          <input type="text" id="lcs-s1" value="ABCBDAB" style="width:120px;min-width:80px"/>
+          <span class="mini-label">S2</span>
+          <input type="text" id="lcs-s2" value="BDCAB" style="width:120px;min-width:80px"/>
+          <button class="btn btn-primary" style="padding:6px 16px;font-size:.72rem" onclick="runLCS()">▶ Run</button>
+        </div>
+      </div>
+      <div style="padding:16px">
+        <div class="dp-table-wrap"><table class="dp-table" id="lcs-table"></table></div>
+      </div>
+    </div>
+    <div class="info-box" id="lcs-info">LCS finds the longest subsequence common to both strings. Each cell dp[i][j] = length of LCS of first i chars of S1 and first j chars of S2.</div>
+  </div>
+
+  <!-- MCM TAB -->
+  <div class="tab-content" id="dp-mcm">
+    <div class="canvas-panel">
+      <div class="canvas-header">
+        <div class="canvas-title">Matrix Chain Multiplication — Cost Table</div>
+        <div class="canvas-controls">
+          <span class="mini-label">Dims (e.g. 10,30,5,60)</span>
+          <input type="text" id="mcm-dims" value="10,30,5,60,20" style="width:170px;min-width:100px"/>
+          <button class="btn btn-primary" style="padding:6px 16px;font-size:.72rem" onclick="runMCM()">▶ Run</button>
+        </div>
+      </div>
+      <div style="padding:16px">
+        <div class="dp-table-wrap"><table class="dp-table" id="mcm-table"></table></div>
+      </div>
+    </div>
+    <div class="info-box" id="mcm-info">MCM finds the optimal parenthesization to minimize scalar multiplications. dp[i][j] = min cost to multiply matrices i through j.</div>
+  </div>
+
+  <!-- KNAPSACK TAB -->
+  <div class="tab-content" id="dp-knapsack">
+    <div class="canvas-panel">
+      <div class="canvas-header">
+        <div class="canvas-title">0/1 Knapsack — DP Table</div>
+        <div class="canvas-controls">
+          <span class="mini-label">Capacity</span>
+          <input type="number" id="ks-cap" value="10" min="1" max="20" style="width:60px;min-width:60px"/>
+          <button class="btn btn-primary" style="padding:6px 16px;font-size:.72rem" onclick="runKnapsack()">▶ Run</button>
+        </div>
+      </div>
+      <div style="padding:12px 16px 4px">
+        <div style="font-size:.7rem;color:var(--text-dim);margin-bottom:8px">Items (weight, value): <span style="color:var(--accent4)">(2,6) (2,10) (3,12) (5,13) (7,15)</span></div>
+        <div class="dp-table-wrap"><table class="dp-table" id="ks-table"></table></div>
+      </div>
+    </div>
+    <div class="info-box" id="ks-info">0/1 Knapsack: each item is taken or left. dp[i][w] = max value using first i items with capacity w.</div>
+  </div>
+
+  <!-- N-QUEENS TAB -->
+  <div class="tab-content" id="dp-nqueens">
+    <div class="canvas-panel">
+      <div class="canvas-header">
+        <div class="canvas-title">N-Queens Problem — Backtracking</div>
+        <div class="canvas-controls">
+          <span class="mini-label">N =</span>
+          <select id="nq-n" style="min-width:60px;width:60px">
+            <option value="4">4</option><option value="5">5</option><option value="6" selected>6</option><option value="8">8</option>
+          </select>
+          <button class="btn btn-primary" style="padding:6px 16px;font-size:.72rem" id="nq-run-btn" onclick="runNQueens()">▶ Solve</button>
+          <button class="btn btn-secondary" style="padding:6px 14px;font-size:.72rem" onclick="stopNQ()">■ Stop</button>
+        </div>
+      </div>
+      <div class="board-wrap"><div id="nq-board"></div></div>
+    </div>
+    <div class="info-box" id="nq-info">Backtracking places queens one column at a time, pruning branches that cause conflicts. Watch the board fill and backtrack in real time.</div>
+  </div>
+
+  <!-- GRAPH COLORING TAB -->
+  <div class="tab-content" id="dp-coloring">
+    <div class="canvas-panel">
+      <div class="canvas-header">
+        <div class="canvas-title">Graph Coloring — Backtracking</div>
+        <div class="canvas-controls">
+          <span class="mini-label">Colors =</span>
+          <select id="gc-colors" style="min-width:60px;width:60px">
+            <option value="3" selected>3</option><option value="4">4</option>
+          </select>
+          <button class="btn btn-primary" style="padding:6px 16px;font-size:.72rem" id="gc-run-btn" onclick="runGraphColoring()">▶ Solve</button>
+          <button class="btn btn-secondary" style="padding:6px 14px;font-size:.72rem" onclick="stopGC()">■ Stop</button>
+        </div>
+      </div>
+      <div class="coloring-wrap"><canvas id="gc-canvas" width="520" height="300"></canvas></div>
+    </div>
+    <div class="info-box" id="gc-info">Assign colors to vertices so no two adjacent vertices share a color using the minimum colors. Backtracking tries each color and backs up on conflict.</div>
+  </div>
+</div><!-- end dp-section -->
+
+<!-- ════════════════════════════════════════════
+     GRAPH SECTION
+═══════════════════════════════════════════════ -->
+<div class="section-divider" id="graph-section" style="padding-top:32px">
+  <div class="section-header">
+    <span class="section-badge badge-graph">⬡ Graph Algorithms</span>
+    <span class="section-title-text">Graph & Network Flow Visualizations</span>
+  </div>
+
+  <div class="tab-bar" id="graph-tab-bar">
+    <button class="tab-btn tab-graph tab-active" onclick="openGraphTab('g-bfs')">BFS</button>
+    <button class="tab-btn tab-graph" onclick="openGraphTab('g-dfs')">DFS</button>
+    <button class="tab-btn tab-graph" onclick="openGraphTab('g-topo')">Topological Sort</button>
+    <button class="tab-btn tab-graph" onclick="openGraphTab('g-scc')">SCC</button>
+    <button class="tab-btn tab-graph" onclick="openGraphTab('g-floyd')">Floyd-Warshall</button>
+    <button class="tab-btn tab-graph" onclick="openGraphTab('g-flow')">Ford-Fulkerson</button>
+  </div>
+
+  <!-- BFS TAB -->
+  <div class="tab-content active" id="g-bfs">
+    <div class="canvas-panel">
+      <div class="canvas-header">
+        <div class="canvas-title graph-title">Breadth-First Search</div>
+        <div class="canvas-controls">
+          <span class="mini-label">Start Node</span>
+          <select id="bfs-start" style="width:60px;min-width:60px">
+            <option value="0">0</option><option value="1">1</option><option value="2">2</option>
+            <option value="3">3</option><option value="4">4</option><option value="5">5</option>
+          </select>
+          <button class="btn btn-primary" style="padding:6px 16px;font-size:.72rem" onclick="runBFS()">▶ Run BFS</button>
+        </div>
+      </div>
+      <canvas id="bfs-canvas" height="320"></canvas>
+    </div>
+    <div class="info-box graph-info" id="bfs-info">
+      <strong>BFS</strong> explores nodes level by level using a queue. Applications: shortest path in unweighted graphs, web crawling, peer-to-peer networks, social network analysis.
+    </div>
+    <div class="concept-grid" style="margin-top:12px">
+      <div class="concept-card graph-card"><h4>Queue (FIFO)</h4><p>BFS uses a queue. Enqueue the source, then neighbors. Process front → enqueue unvisited neighbors.</p></div>
+      <div class="concept-card graph-card"><h4>Level Order</h4><p>All nodes at distance d are visited before nodes at distance d+1. Guarantees shortest path in unweighted graphs.</p></div>
+      <div class="concept-card graph-card"><h4>Complexity</h4><p>Time: <strong style="color:var(--accent)">O(V + E)</strong>. Space: O(V) for queue and visited array. V = vertices, E = edges.</p></div>
+    </div>
+  </div>
+
+  <!-- DFS TAB -->
+  <div class="tab-content" id="g-dfs">
+    <div class="canvas-panel">
+      <div class="canvas-header">
+        <div class="canvas-title graph-title">Depth-First Search</div>
+        <div class="canvas-controls">
+          <span class="mini-label">Start Node</span>
+          <select id="dfs-start" style="width:60px;min-width:60px">
+            <option value="0">0</option><option value="1">1</option><option value="2">2</option>
+            <option value="3">3</option><option value="4">4</option><option value="5">5</option>
+          </select>
+          <button class="btn btn-primary" style="padding:6px 16px;font-size:.72rem" onclick="runDFS()">▶ Run DFS</button>
+        </div>
+      </div>
+      <canvas id="dfs-canvas" height="320"></canvas>
+    </div>
+    <div class="info-box graph-info" id="dfs-info">
+      <strong>DFS</strong> explores as far as possible along each branch before backtracking. Applications: cycle detection, topological sort, maze solving, connected components.
+    </div>
+    <div class="concept-grid" style="margin-top:12px">
+      <div class="concept-card graph-card"><h4>Stack (LIFO)</h4><p>DFS uses a stack (or recursion). Push start, pop and explore deepest unvisited neighbor first.</p></div>
+      <div class="concept-card graph-card"><h4>Discovery / Finish</h4><p>Each node gets a discovery time and finish time, useful for topological sorting and SCC detection.</p></div>
+      <div class="concept-card graph-card"><h4>Complexity</h4><p>Time: <strong style="color:var(--accent)">O(V + E)</strong>. Space: O(V) for stack/recursion. Can detect back edges → cycles.</p></div>
+    </div>
+  </div>
+
+  <!-- TOPO TAB -->
+  <div class="tab-content" id="g-topo">
+    <div class="canvas-panel">
+      <div class="canvas-header">
+        <div class="canvas-title graph-title">Topological Sort (Kahn's Algorithm)</div>
+        <div class="canvas-controls">
+          <button class="btn btn-primary" style="padding:6px 16px;font-size:.72rem" onclick="runTopo()">▶ Run Topo Sort</button>
+        </div>
+      </div>
+      <canvas id="topo-canvas" height="320"></canvas>
+    </div>
+    <div class="info-box graph-info" id="topo-info">
+      <strong>Topological Sort</strong> orders vertices in a DAG so every edge u→v has u before v. Used in task scheduling, build systems, course prerequisites.
+    </div>
+  </div>
+
+  <!-- SCC TAB -->
+  <div class="tab-content" id="g-scc">
+    <div class="canvas-panel">
+      <div class="canvas-header">
+        <div class="canvas-title graph-title">Strongly Connected Components (Kosaraju's)</div>
+        <div class="canvas-controls">
+          <button class="btn btn-primary" style="padding:6px 16px;font-size:.72rem" onclick="runSCC()">▶ Find SCCs</button>
+        </div>
+      </div>
+      <canvas id="scc-canvas" height="320"></canvas>
+    </div>
+    <div class="info-box graph-info" id="scc-info">
+      <strong>SCC:</strong> maximal set of vertices mutually reachable from each other. Kosaraju's: 1) DFS finish-order, 2) transpose graph, 3) DFS in reverse finish-order.
+    </div>
+  </div>
+
+  <!-- FLOYD TAB -->
+  <div class="tab-content" id="g-floyd">
+    <div class="canvas-panel">
+      <div class="canvas-header">
+        <div class="canvas-title graph-title">Floyd-Warshall — All-Pairs Shortest Path</div>
+        <div class="canvas-controls">
+          <button class="btn btn-primary" style="padding:6px 16px;font-size:.72rem" onclick="runFloyd()">▶ Run Floyd-Warshall</button>
+        </div>
+      </div>
+      <div style="padding:16px">
+        <div class="dp-table-wrap"><table class="dp-table graph-table" id="floyd-table"></table></div>
+      </div>
+    </div>
+    <div class="info-box graph-info" id="floyd-info">
+      <strong>Floyd-Warshall</strong> computes shortest paths between ALL pairs of vertices. dp[i][j][k] = shortest path from i to j using vertices {0..k}. Time: <span class="acc">O(V³)</span>.
+    </div>
+  </div>
+
+  <!-- FORD-FULKERSON TAB -->
+  <div class="tab-content" id="g-flow">
+    <div class="canvas-panel">
+      <div class="canvas-header">
+        <div class="canvas-title graph-title">Ford-Fulkerson — Max Flow / Min Cut</div>
+        <div class="canvas-controls">
+          <button class="btn btn-primary" style="padding:6px 16px;font-size:.72rem" onclick="runFordFulkerson()">▶ Run Max-Flow</button>
+        </div>
+      </div>
+      <canvas id="flow-canvas" height="340"></canvas>
+    </div>
+    <div class="info-box graph-info" id="flow-info">
+      <strong>Max-Flow Min-Cut Theorem:</strong> maximum flow from source S to sink T equals minimum capacity of any S-T cut. Ford-Fulkerson finds augmenting paths until no more exist.
+    </div>
+    <div class="concept-grid" style="margin-top:12px">
+      <div class="concept-card graph-card"><h4>Augmenting Path</h4><p>A path from S to T with available residual capacity. We push flow equal to the bottleneck (min edge capacity) along this path.</p></div>
+      <div class="concept-card graph-card"><h4>Residual Graph</h4><p>After pushing flow f on edge u→v, add backward edge v→u with capacity f, allowing "undoing" of flow decisions.</p></div>
+      <div class="concept-card graph-card"><h4>Min-Cut</h4><p>The set of edges whose removal disconnects S from T with minimum total capacity = max flow. A fundamental theorem in network flow.</p></div>
+    </div>
+  </div>
+
+  <div style="height:40px"></div>
+</div><!-- end graph-section -->
+
 <script>
-// ══════════════════════════════════════
-//  STATE
-// ══════════════════════════════════════
+// ════════════════════════════════════════
+//  SORTING / SEARCHING STATE & UTILS
+// ════════════════════════════════════════
 let currentAlgo = 'bubble';
 let isRunning = false;
 let stopFlag = false;
 let array = [];
-let comparisons = 0;
-let swaps = 0;
-let stepCount = 0;
-let animQueue = [];
+let comparisons = 0, swaps = 0, stepCount = 0;
+const DELAY_MAP = s => Math.max(40, 1100 - s * 100);
 
-const DELAY_MAP = speed => Math.max(50, 1100 - speed * 100);
-
-// ══════════════════════════════════════
-//  COMPLEXITY DATA
-// ══════════════════════════════════════
 const complexityData = {
-  bubble:        { best:'O(n)', avg:'O(n²)', worst:'O(n²)', space:'O(1)', stable:'Yes' },
-  selection:     { best:'O(n²)', avg:'O(n²)', worst:'O(n²)', space:'O(1)', stable:'No' },
-  insertion:     { best:'O(n)', avg:'O(n²)', worst:'O(n²)', space:'O(1)', stable:'Yes' },
-  merge:         { best:'O(n log n)', avg:'O(n log n)', worst:'O(n log n)', space:'O(n)', stable:'Yes' },
-  quick:         { best:'O(n log n)', avg:'O(n log n)', worst:'O(n²)', space:'O(log n)', stable:'No' },
-  heap:          { best:'O(n log n)', avg:'O(n log n)', worst:'O(n log n)', space:'O(1)', stable:'No' },
-  shell:         { best:'O(n log n)', avg:'O(n log²n)', worst:'O(n²)', space:'O(1)', stable:'No' },
-  linear:        { best:'O(1)', avg:'O(n)', worst:'O(n)', space:'O(1)', stable:'Yes' },
-  binary:        { best:'O(1)', avg:'O(log n)', worst:'O(log n)', space:'O(1)', stable:'N/A' },
-  jump:          { best:'O(1)', avg:'O(√n)', worst:'O(√n)', space:'O(1)', stable:'N/A' },
-  interpolation: { best:'O(1)', avg:'O(log log n)', worst:'O(n)', space:'O(1)', stable:'N/A' },
-  exponential:   { best:'O(1)', avg:'O(log n)', worst:'O(log n)', space:'O(log n)', stable:'N/A' },
+  bubble:{best:'O(n)',avg:'O(n²)',worst:'O(n²)',space:'O(1)',stable:'Yes'},
+  selection:{best:'O(n²)',avg:'O(n²)',worst:'O(n²)',space:'O(1)',stable:'No'},
+  insertion:{best:'O(n)',avg:'O(n²)',worst:'O(n²)',space:'O(1)',stable:'Yes'},
+  merge:{best:'O(n log n)',avg:'O(n log n)',worst:'O(n log n)',space:'O(n)',stable:'Yes'},
+  quick:{best:'O(n log n)',avg:'O(n log n)',worst:'O(n²)',space:'O(log n)',stable:'No'},
+  heap:{best:'O(n log n)',avg:'O(n log n)',worst:'O(n log n)',space:'O(1)',stable:'No'},
+  shell:{best:'O(n log n)',avg:'O(n log²n)',worst:'O(n²)',space:'O(1)',stable:'No'},
+  linear:{best:'O(1)',avg:'O(n)',worst:'O(n)',space:'O(1)',stable:'Yes'},
+  binary:{best:'O(1)',avg:'O(log n)',worst:'O(log n)',space:'O(1)',stable:'N/A'},
+  jump:{best:'O(1)',avg:'O(√n)',worst:'O(√n)',space:'O(1)',stable:'N/A'},
+  interpolation:{best:'O(1)',avg:'O(log log n)',worst:'O(n)',space:'O(1)',stable:'N/A'},
+  exponential:{best:'O(1)',avg:'O(log n)',worst:'O(log n)',space:'O(log n)',stable:'N/A'},
 };
 
-// ══════════════════════════════════════
-//  PSEUDO CODE
-// ══════════════════════════════════════
 const pseudoCodes = {
-  bubble: `<span class="kw">function</span> <span class="fn">bubbleSort</span>(arr):
+  bubble:`<span class="kw">function</span> <span class="fn">bubbleSort</span>(arr):
   n = arr.length
   <span class="kw">for</span> i = 0 <span class="kw">to</span> n-1:
     <span class="kw">for</span> j = 0 <span class="kw">to</span> n-i-2:
       <span class="kw">if</span> arr[j] > arr[j+1]:
-        swap(arr[j], arr[j+1])  <span class="cm">// swap adjacent</span>
-  <span class="kw">return</span> arr`,
-
-  selection: `<span class="kw">function</span> <span class="fn">selectionSort</span>(arr):
-  n = arr.length
+        swap(arr[j], arr[j+1])`,
+  selection:`<span class="kw">function</span> <span class="fn">selectionSort</span>(arr):
   <span class="kw">for</span> i = 0 <span class="kw">to</span> n-1:
     minIdx = i
     <span class="kw">for</span> j = i+1 <span class="kw">to</span> n-1:
-      <span class="kw">if</span> arr[j] < arr[minIdx]:
-        minIdx = j  <span class="cm">// track min</span>
-    swap(arr[i], arr[minIdx])
-  <span class="kw">return</span> arr`,
-
-  insertion: `<span class="kw">function</span> <span class="fn">insertionSort</span>(arr):
+      <span class="kw">if</span> arr[j] < arr[minIdx]: minIdx = j
+    swap(arr[i], arr[minIdx])`,
+  insertion:`<span class="kw">function</span> <span class="fn">insertionSort</span>(arr):
   <span class="kw">for</span> i = 1 <span class="kw">to</span> n-1:
-    key = arr[i]
-    j = i - 1
+    key = arr[i]; j = i-1
     <span class="kw">while</span> j >= 0 <span class="kw">and</span> arr[j] > key:
-      arr[j+1] = arr[j]  <span class="cm">// shift right</span>
-      j = j - 1
-    arr[j+1] = key
-  <span class="kw">return</span> arr`,
-
-  merge: `<span class="kw">function</span> <span class="fn">mergeSort</span>(arr, l, r):
+      arr[j+1] = arr[j]; j--
+    arr[j+1] = key`,
+  merge:`<span class="kw">function</span> <span class="fn">mergeSort</span>(arr, l, r):
   <span class="kw">if</span> l < r:
-    mid = (l + r) / 2
+    mid = (l+r)/2
     mergeSort(arr, l, mid)
     mergeSort(arr, mid+1, r)
-    merge(arr, l, mid, r)  <span class="cm">// merge halves</span>
-
-<span class="kw">function</span> <span class="fn">merge</span>(arr, l, m, r):
-  <span class="cm">// merge two sorted halves</span>
-  copy left and right subarrays
-  merge them back into arr`,
-
-  quick: `<span class="kw">function</span> <span class="fn">quickSort</span>(arr, low, high):
-  <span class="kw">if</span> low < high:
-    pivot = arr[high]  <span class="cm">// last element</span>
-    pi = partition(arr, low, high)
-    quickSort(arr, low, pi-1)
-    quickSort(arr, pi+1, high)
-
-<span class="kw">function</span> <span class="fn">partition</span>(arr, low, high):
-  i = low - 1
-  <span class="kw">for</span> j = low <span class="kw">to</span> high-1:
-    <span class="kw">if</span> arr[j] <= pivot: swap, i++
-  swap(arr[i+1], arr[high])
-  <span class="kw">return</span> i + 1`,
-
-  heap: `<span class="kw">function</span> <span class="fn">heapSort</span>(arr):
+    merge(arr, l, mid, r)`,
+  quick:`<span class="kw">function</span> <span class="fn">quickSort</span>(arr, lo, hi):
+  <span class="kw">if</span> lo < hi:
+    pivot = arr[hi]
+    pi = partition(arr, lo, hi)
+    quickSort(arr, lo, pi-1)
+    quickSort(arr, pi+1, hi)`,
+  heap:`<span class="kw">function</span> <span class="fn">heapSort</span>(arr):
   buildMaxHeap(arr)
   <span class="kw">for</span> i = n-1 <span class="kw">down to</span> 1:
     swap(arr[0], arr[i])
-    heapify(arr, 0, i)
-
-<span class="kw">function</span> <span class="fn">heapify</span>(arr, i, n):
-  largest = i
-  left = 2*i+1; right = 2*i+2
-  <span class="kw">if</span> arr[left] > arr[largest]: largest=left
-  <span class="kw">if</span> arr[right] > arr[largest]: largest=right
-  <span class="kw">if</span> largest != i: swap, heapify(largest)`,
-
-  shell: `<span class="kw">function</span> <span class="fn">shellSort</span>(arr):
-  gap = n / 2
+    heapify(arr, 0, i)`,
+  shell:`<span class="kw">function</span> <span class="fn">shellSort</span>(arr):
+  gap = n/2
   <span class="kw">while</span> gap > 0:
     <span class="kw">for</span> i = gap <span class="kw">to</span> n-1:
-      temp = arr[i]
-      j = i
-      <span class="kw">while</span> j >= gap <span class="kw">and</span> arr[j-gap] > temp:
-        arr[j] = arr[j-gap]
-        j -= gap
-      arr[j] = temp
-    gap = gap / 2`,
-
-  linear: `<span class="kw">function</span> <span class="fn">linearSearch</span>(arr, target):
+      temp=arr[i]; j=i
+      <span class="kw">while</span> j>=gap <span class="kw">and</span> arr[j-gap]>temp:
+        arr[j]=arr[j-gap]; j-=gap
+      arr[j]=temp
+    gap /= 2`,
+  linear:`<span class="kw">function</span> <span class="fn">linearSearch</span>(arr, target):
   <span class="kw">for</span> i = 0 <span class="kw">to</span> n-1:
-    <span class="kw">if</span> arr[i] == target:
-      <span class="kw">return</span> i  <span class="cm">// found at index i</span>
-  <span class="kw">return</span> -1  <span class="cm">// not found</span>`,
-
-  binary: `<span class="kw">function</span> <span class="fn">binarySearch</span>(arr, target):
-  <span class="cm">// array must be sorted!</span>
-  low = 0; high = n - 1
-  <span class="kw">while</span> low <= high:
-    mid = (low + high) / 2
-    <span class="kw">if</span> arr[mid] == target: <span class="kw">return</span> mid
-    <span class="kw">if</span> arr[mid] < target:  low = mid + 1
-    <span class="kw">else</span>: high = mid - 1
+    <span class="kw">if</span> arr[i] == target: <span class="kw">return</span> i
   <span class="kw">return</span> -1`,
-
-  jump: `<span class="kw">function</span> <span class="fn">jumpSearch</span>(arr, target):
-  step = √n; prev = 0
-  <span class="kw">while</span> arr[min(step,n)-1] < target:
-    prev = step; step += √n
-    <span class="kw">if</span> prev >= n: <span class="kw">return</span> -1
-  <span class="kw">while</span> arr[prev] < target:
-    prev++
-    <span class="kw">if</span> prev == min(step,n): <span class="kw">return</span> -1
-  <span class="kw">if</span> arr[prev] == target: <span class="kw">return</span> prev
+  binary:`<span class="kw">function</span> <span class="fn">binarySearch</span>(arr, target):
+  low=0; high=n-1
+  <span class="kw">while</span> low<=high:
+    mid=(low+high)/2
+    <span class="kw">if</span> arr[mid]==target: <span class="kw">return</span> mid
+    <span class="kw">if</span> arr[mid]<target: low=mid+1
+    <span class="kw">else</span>: high=mid-1
   <span class="kw">return</span> -1`,
-
-  interpolation: `<span class="kw">function</span> <span class="fn">interpolationSearch</span>(arr, target):
-  low = 0; high = n - 1
-  <span class="kw">while</span> low <= high <span class="kw">and</span>
-        target >= arr[low] <span class="kw">and</span>
-        target <= arr[high]:
-    <span class="cm">// estimate position</span>
-    pos = low + (target - arr[low]) *
-          (high - low) / (arr[high] - arr[low])
-    <span class="kw">if</span> arr[pos] == target: <span class="kw">return</span> pos
-    <span class="kw">if</span> arr[pos] < target: low = pos + 1
-    <span class="kw">else</span>: high = pos - 1
+  jump:`<span class="kw">function</span> <span class="fn">jumpSearch</span>(arr,target):
+  step=√n; prev=0
+  <span class="kw">while</span> arr[min(step,n)-1]<target:
+    prev=step; step+=√n
+  <span class="kw">while</span> arr[prev]<target: prev++
+  <span class="kw">if</span> arr[prev]==target: <span class="kw">return</span> prev
   <span class="kw">return</span> -1`,
-
-  exponential: `<span class="kw">function</span> <span class="fn">exponentialSearch</span>(arr, target):
-  <span class="kw">if</span> arr[0] == target: <span class="kw">return</span> 0
-  i = 1
-  <span class="kw">while</span> i < n <span class="kw">and</span> arr[i] <= target:
-    i = i * 2  <span class="cm">// double the range</span>
-  <span class="cm">// binary search in range [i/2, min(i,n-1)]</span>
-  <span class="kw">return</span> binarySearch(arr, i/2, min(i,n-1), target)`,
+  interpolation:`<span class="kw">function</span> <span class="fn">interpolationSearch</span>(arr,target):
+  pos=low+(target-arr[low])*(high-low)
+          /(arr[high]-arr[low])
+  <span class="kw">if</span> arr[pos]==target: <span class="kw">return</span> pos
+  <span class="kw">if</span> arr[pos]<target: low=pos+1
+  <span class="kw">else</span>: high=pos-1`,
+  exponential:`<span class="kw">function</span> <span class="fn">exponentialSearch</span>(arr,target):
+  i=1
+  <span class="kw">while</span> i<n <span class="kw">and</span> arr[i]<=target: i*=2
+  binarySearch(arr, i/2, min(i,n-1), target)`,
 };
 
-// ══════════════════════════════════════
-//  INIT
-// ══════════════════════════════════════
-document.addEventListener('DOMContentLoaded', () => {
+const algoTitles={bubble:'BUBBLE SORT',selection:'SELECTION SORT',insertion:'INSERTION SORT',merge:'MERGE SORT',quick:'QUICK SORT',heap:'HEAP SORT',shell:'SHELL SORT',linear:'LINEAR SEARCH',binary:'BINARY SEARCH',jump:'JUMP SEARCH',interpolation:'INTERPOLATION SEARCH',exponential:'EXPONENTIAL SEARCH'};
+
+document.addEventListener('DOMContentLoaded',()=>{
   selectAlgo('bubble');
   generateRandom();
-  document.getElementById('speed-slider').addEventListener('input', function() {
-    document.getElementById('speed-label').textContent = this.value + 'x';
+  document.getElementById('speed-slider').addEventListener('input',function(){
+    document.getElementById('speed-label').textContent=this.value+'x';
   });
+  drawFibTree();
+  initGraphCanvases();
 });
 
-function toggleGroup(id) {
-  const grp = document.getElementById(id);
-  grp.classList.toggle('open');
+function scrollToSection(id){document.getElementById(id).scrollIntoView({behavior:'smooth'})}
+function toggleGroup(id){document.getElementById(id).classList.toggle('open')}
+
+function openDpTab(id){
+  document.querySelectorAll('#dp-tab-bar .tab-btn').forEach((b,i)=>{
+    const ids=['dp-concepts','dp-fib','dp-lcs','dp-mcm','dp-knapsack','dp-nqueens','dp-coloring'];
+    b.classList.toggle('tab-active', ids[i]===id);
+  });
+  document.querySelectorAll('#dp-section .tab-content').forEach(c=>{c.classList.toggle('active',c.id===id)});
+  if(id==='dp-concepts') drawFibTree();
+  if(id==='dp-coloring') initGCCanvas();
 }
 
-function selectAlgo(name) {
-  currentAlgo = name;
-  document.querySelectorAll('.algo-btn').forEach(b => b.classList.remove('active'));
-  const btns = document.querySelectorAll('.algo-btn');
-  btns.forEach(b => { if (b.textContent.toLowerCase().includes(name.replace(/[a-z]/gi,'').trim())) {} });
-  // find by onclick
-  document.querySelectorAll('.algo-btn').forEach(b => {
-    if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(`'${name}'`)) b.classList.add('active');
+function openGraphTab(id){
+  document.querySelectorAll('#graph-tab-bar .tab-btn').forEach((b,i)=>{
+    const ids=['g-bfs','g-dfs','g-topo','g-scc','g-floyd','g-flow'];
+    b.classList.toggle('tab-active', ids[i]===id);
   });
+  document.querySelectorAll('#graph-section .tab-content').forEach(c=>{c.classList.toggle('active',c.id===id)});
+  setTimeout(()=>initGraphCanvases(), 50);
+}
 
-  // update complexity
-  const d = complexityData[name] || {};
-  document.getElementById('c-best').textContent = d.best || '—';
-  document.getElementById('c-avg').textContent = d.avg || '—';
-  document.getElementById('c-worst').textContent = d.worst || '—';
-  document.getElementById('c-space').textContent = d.space || '—';
-  document.getElementById('c-stable').textContent = d.stable || '—';
-
-  // pseudo code
-  document.getElementById('pseudo-code').innerHTML = pseudoCodes[name] || '// No pseudocode available';
-
-  // algo title
-  const titles = {
-    bubble:'BUBBLE SORT', selection:'SELECTION SORT', insertion:'INSERTION SORT',
-    merge:'MERGE SORT', quick:'QUICK SORT', heap:'HEAP SORT', shell:'SHELL SORT',
-    linear:'LINEAR SEARCH', binary:'BINARY SEARCH', jump:'JUMP SEARCH',
-    interpolation:'INTERPOLATION SEARCH', exponential:'EXPONENTIAL SEARCH'
-  };
-  document.getElementById('viz-title').textContent = titles[name] || name.toUpperCase();
-
-  // show/hide target input
-  const isSearch = ['linear','binary','jump','interpolation','exponential'].includes(name);
-  document.getElementById('target-group').style.display = isSearch ? 'flex' : 'none';
-
-  // update legend for search
+function selectAlgo(name){
+  currentAlgo=name;
+  document.querySelectorAll('.algo-btn').forEach(b=>{
+    b.classList.toggle('active', b.getAttribute('onclick')&&b.getAttribute('onclick').includes(`'${name}'`));
+  });
+  const d=complexityData[name]||{};
+  document.getElementById('c-best').textContent=d.best||'—';
+  document.getElementById('c-avg').textContent=d.avg||'—';
+  document.getElementById('c-worst').textContent=d.worst||'—';
+  document.getElementById('c-space').textContent=d.space||'—';
+  document.getElementById('c-stable').textContent=d.stable||'—';
+  document.getElementById('pseudo-code').innerHTML=pseudoCodes[name]||'// N/A';
+  document.getElementById('viz-title').textContent=algoTitles[name]||name.toUpperCase();
+  const isSearch=['linear','binary','jump','interpolation','exponential'].includes(name);
+  document.getElementById('target-group').style.display=isSearch?'flex':'none';
   updateLegend(isSearch);
-
-  log(`Selected: ${titles[name]}`, 'highlight');
+  log(`Selected: ${algoTitles[name]}`,'highlight');
 }
 
-function updateLegend(isSearch) {
-  const legend = document.getElementById('legend');
-  if (isSearch) {
-    legend.innerHTML = `
-      <div class="legend-item"><div class="legend-dot" style="background:var(--bar-default)"></div>Default</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--bar-compare)"></div>Checking</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--accent4)"></div>Mid/Range</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--bar-found)"></div>Found</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--muted)"></div>Eliminated</div>`;
-  } else {
-    legend.innerHTML = `
-      <div class="legend-item"><div class="legend-dot" style="background:var(--bar-default)"></div>Default</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--bar-compare)"></div>Comparing</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--bar-swap)"></div>Swapping</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--bar-sorted)"></div>Sorted</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--bar-pivot)"></div>Pivot</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--bar-found)"></div>Found</div>`;
-  }
+function updateLegend(isSearch){
+  const l=document.getElementById('legend');
+  if(isSearch){l.innerHTML=`<div class="legend-item"><div class="legend-dot" style="background:var(--bar-default)"></div>Default</div><div class="legend-item"><div class="legend-dot" style="background:var(--bar-compare)"></div>Checking</div><div class="legend-item"><div class="legend-dot" style="background:var(--accent4)"></div>Mid</div><div class="legend-item"><div class="legend-dot" style="background:var(--bar-found)"></div>Found</div><div class="legend-item"><div class="legend-dot" style="background:var(--muted)"></div>Eliminated</div>`;}
+  else{l.innerHTML=`<div class="legend-item"><div class="legend-dot" style="background:var(--bar-default)"></div>Default</div><div class="legend-item"><div class="legend-dot" style="background:var(--bar-compare)"></div>Comparing</div><div class="legend-item"><div class="legend-dot" style="background:var(--bar-swap)"></div>Swapping</div><div class="legend-item"><div class="legend-dot" style="background:var(--bar-sorted)"></div>Sorted</div><div class="legend-item"><div class="legend-dot" style="background:var(--bar-pivot)"></div>Pivot</div><div class="legend-item"><div class="legend-dot" style="background:var(--bar-found)"></div>Found</div>`;}
 }
 
-// ══════════════════════════════════════
-//  ARRAY GENERATION
-// ══════════════════════════════════════
-function generateRandom() {
-  const size = parseInt(document.getElementById('size-select').value);
-  const arr = Array.from({length: size}, () => Math.floor(Math.random() * 95) + 5);
-  document.getElementById('array-input').value = arr.join(', ');
-  renderBars(arr);
-  resetStats();
-  showWelcome();
+function generateRandom(){
+  const size=parseInt(document.getElementById('size-select').value);
+  const arr=Array.from({length:size},()=>Math.floor(Math.random()*95)+5);
+  document.getElementById('array-input').value=arr.join(', ');
+  renderBars(arr);resetStats();showWelcome();
 }
+function parseArray(){return document.getElementById('array-input').value.split(/[\s,]+/).filter(x=>x).map(Number).filter(n=>!isNaN(n));}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+function getDelay(){return DELAY_MAP(parseInt(document.getElementById('speed-slider').value))}
 
-function parseArray() {
-  const val = document.getElementById('array-input').value;
-  return val.split(/[\s,]+/).filter(x => x).map(Number).filter(n => !isNaN(n));
+function showWelcome(){
+  document.getElementById('welcome').style.display='flex';
+  document.getElementById('bar-container').style.display='none';
+  document.getElementById('search-container').style.display='none';
 }
+function log(msg,type=''){
+  const c=document.getElementById('log-entries');
+  const e=document.createElement('div');e.className='log-entry '+type;e.textContent='> '+msg;
+  c.appendChild(e);c.scrollTop=c.scrollHeight;
+  while(c.children.length>80)c.removeChild(c.firstChild);
+}
+function clearLog(){document.getElementById('log-entries').innerHTML='';}
+function resetStats(){comparisons=0;swaps=0;stepCount=0;document.getElementById('stat-cmp').textContent='0';document.getElementById('stat-swp').textContent='0';document.getElementById('step-info').style.display='none';}
+function updateStats(){document.getElementById('stat-cmp').textContent=comparisons;document.getElementById('stat-swp').textContent=swaps;}
+function incCmp(){comparisons++;updateStats()}
+function incSwp(){swaps++;updateStats()}
+function incStep(){stepCount++;document.getElementById('step-info').style.display='block';document.getElementById('step-num').textContent=stepCount;}
+function setRunning(r){isRunning=r;document.getElementById('run-btn').disabled=r;const b=document.getElementById('running-badge');r?b.classList.add('active'):b.classList.remove('active');}
+function stopAlgorithm(){stopFlag=true;setRunning(false);log('Stopped.','warn')}
 
-// ══════════════════════════════════════
-//  RENDER
-// ══════════════════════════════════════
-function renderBars(arr, states = {}) {
-  const container = document.getElementById('bar-container');
-  document.getElementById('bar-container').style.display = 'flex';
-  document.getElementById('search-container').style.display = 'none';
-  document.getElementById('welcome').style.display = 'none';
-
-  const maxVal = Math.max(...arr);
-  container.innerHTML = '';
-
-  arr.forEach((val, i) => {
-    const wrap = document.createElement('div');
-    wrap.className = 'bar-wrap';
-    wrap.id = `bw-${i}`;
-
-    const bar = document.createElement('div');
-    bar.className = 'bar' + (states[i] ? ' ' + states[i] : '');
-    bar.id = `bar-${i}`;
-    const heightPct = (val / maxVal) * 92;
-    bar.style.height = heightPct + '%';
-
-    const valLabel = document.createElement('div');
-    valLabel.className = 'bar-val';
-    valLabel.textContent = arr.length <= 30 ? val : '';
-
-    wrap.appendChild(bar);
-    wrap.appendChild(valLabel);
-    container.appendChild(wrap);
+// ── Bar render ──
+function renderBars(arr,states={}){
+  const c=document.getElementById('bar-container');
+  c.style.display='flex';document.getElementById('search-container').style.display='none';document.getElementById('welcome').style.display='none';
+  const maxVal=Math.max(...arr);c.innerHTML='';
+  arr.forEach((val,i)=>{
+    const wrap=document.createElement('div');wrap.className='bar-wrap';wrap.id='bw-'+i;
+    const bar=document.createElement('div');bar.className='bar'+(states[i]?' '+states[i]:'');bar.id='bar-'+i;
+    bar.style.height=((val/maxVal)*92)+'%';
+    const lbl=document.createElement('div');lbl.className='bar-val';lbl.textContent=arr.length<=30?val:'';
+    wrap.appendChild(bar);wrap.appendChild(lbl);c.appendChild(wrap);
   });
 }
-
-function renderSearchCells(arr, states = {}, pointers = {}) {
-  const container = document.getElementById('search-container');
-  document.getElementById('bar-container').style.display = 'none';
-  document.getElementById('search-container').style.display = 'flex';
-  document.getElementById('welcome').style.display = 'none';
-
-  container.innerHTML = '';
-
-  arr.forEach((val, i) => {
-    const cell = document.createElement('div');
-    cell.className = 'search-cell' + (states[i] ? ' ' + states[i] : '');
-    cell.id = `cell-${i}`;
-
-    // pointers
-    const ptrs = Object.entries(pointers).filter(([, idx]) => idx === i);
-    ptrs.forEach(([name]) => {
-      const arrow = document.createElement('div');
-      arrow.className = `pointer-arrow ptr-${name}`;
-      arrow.textContent = `▼ ${name.toUpperCase()}`;
-      cell.appendChild(arrow);
+function renderSearchCells(arr,states={},pointers={}){
+  const c=document.getElementById('search-container');
+  document.getElementById('bar-container').style.display='none';c.style.display='flex';document.getElementById('welcome').style.display='none';
+  c.innerHTML='';
+  arr.forEach((val,i)=>{
+    const cell=document.createElement('div');cell.className='search-cell'+(states[i]?' '+states[i]:'');cell.id='cell-'+i;
+    Object.entries(pointers).filter(([,idx])=>idx===i).forEach(([name])=>{
+      const a=document.createElement('div');a.className='pointer-arrow ptr-'+name;a.textContent='▼ '+name.toUpperCase();cell.appendChild(a);
     });
-
-    const numSpan = document.createElement('span');
-    numSpan.textContent = val;
-    cell.appendChild(numSpan);
-
-    const idxSpan = document.createElement('div');
-    idxSpan.className = 'cell-idx';
-    idxSpan.textContent = i;
-    cell.appendChild(idxSpan);
-
-    container.appendChild(cell);
+    const s=document.createElement('span');s.textContent=val;cell.appendChild(s);
+    const idx=document.createElement('div');idx.className='cell-idx';idx.textContent=i;cell.appendChild(idx);
+    c.appendChild(cell);
   });
 }
-
-// ══════════════════════════════════════
-//  UTILS
-// ══════════════════════════════════════
-function showWelcome() {
-  document.getElementById('welcome').style.display = 'flex';
-  document.getElementById('bar-container').style.display = 'none';
-  document.getElementById('search-container').style.display = 'none';
+function animateBar(i,cls){const b=document.getElementById('bar-'+i);if(b)b.className='bar '+cls;}
+function clearBar(i){const b=document.getElementById('bar-'+i);if(b)b.className='bar';}
+function rebuildBar(idx,arr){
+  const bar=document.getElementById('bar-'+idx);const wrap=document.getElementById('bw-'+idx);if(!bar||!wrap)return;
+  const maxVal=Math.max(...arr);
+  gsap.to(bar,{height:((arr[idx]/maxVal)*92)+'%',duration:.15,ease:'power2.out'});
+  const l=wrap.querySelector('.bar-val');if(l&&arr.length<=30)l.textContent=arr[idx];
+}
+async function animateSwap(i,j,arr){
+  const maxVal=Math.max(...arr);
+  const bi=document.getElementById('bar-'+i);const bj=document.getElementById('bar-'+j);if(!bi||!bj)return;
+  gsap.to(bi,{height:((arr[i]/maxVal)*92)+'%',duration:.18,ease:'power2.out'});
+  gsap.to(bj,{height:((arr[j]/maxVal)*92)+'%',duration:.18,ease:'power2.out'});
+  const wi=document.getElementById('bw-'+i);const wj=document.getElementById('bw-'+j);
+  if(wi){const l=wi.querySelector('.bar-val');if(l&&arr.length<=30)l.textContent=arr[i];}
+  if(wj){const l=wj.querySelector('.bar-val');if(l&&arr.length<=30)l.textContent=arr[j];}
+  return new Promise(r=>setTimeout(r,180));
+}
+async function celebrateAll(n){
+  for(let i=0;i<n;i++){const b=document.getElementById('bar-'+i);if(b)gsap.fromTo(b,{scaleY:1.08},{scaleY:1,duration:.3,delay:i*.03,ease:'elastic.out(1,0.5)',transformOrigin:'bottom center'});}
+  await sleep(n*30+400);
 }
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-function getDelay() {
-  const speed = parseInt(document.getElementById('speed-slider').value);
-  return DELAY_MAP(speed);
-}
-
-function log(msg, type = '') {
-  const container = document.getElementById('log-entries');
-  const entry = document.createElement('div');
-  entry.className = 'log-entry ' + type;
-  entry.textContent = `> ${msg}`;
-  container.appendChild(entry);
-  container.scrollTop = container.scrollHeight;
-  // cap log at 80 entries
-  while (container.children.length > 80) container.removeChild(container.firstChild);
-}
-
-function clearLog() {
-  document.getElementById('log-entries').innerHTML = '';
-}
-
-function resetStats() {
-  comparisons = 0; swaps = 0; stepCount = 0;
-  document.getElementById('stat-cmp').textContent = '0';
-  document.getElementById('stat-swp').textContent = '0';
-  document.getElementById('step-info').style.display = 'none';
-}
-
-function updateStats() {
-  document.getElementById('stat-cmp').textContent = comparisons;
-  document.getElementById('stat-swp').textContent = swaps;
-}
-
-function incCmp() { comparisons++; updateStats(); }
-function incSwp() { swaps++; updateStats(); }
-function incStep() {
-  stepCount++;
-  const el = document.getElementById('step-info');
-  el.style.display = 'block';
-  document.getElementById('step-num').textContent = stepCount;
-}
-
-function setRunning(r) {
-  isRunning = r;
-  document.getElementById('run-btn').disabled = r;
-  document.getElementById('stop-btn').disabled = !r;
-  const badge = document.getElementById('running-badge');
-  r ? badge.classList.add('active') : badge.classList.remove('active');
-}
-
-function stopAlgorithm() {
-  stopFlag = true;
-  setRunning(false);
-  log('Stopped by user.', 'warn');
-}
-
-// ══════════════════════════════════════
-//  MAIN RUNNER
-// ══════════════════════════════════════
-async function runAlgorithm() {
-  if (isRunning) return;
-  stopFlag = false;
-  clearLog();
-  resetStats();
-  setRunning(true);
-
-  array = parseArray();
-  if (array.length < 2) { log('Need at least 2 elements.', 'warn'); setRunning(false); return; }
-
-  log(`Array: [${array.join(', ')}]`);
-  log(`Running: ${currentAlgo.toUpperCase()}`);
-
-  try {
-    switch(currentAlgo) {
-      case 'bubble':        await bubbleSort([...array]); break;
-      case 'selection':     await selectionSort([...array]); break;
-      case 'insertion':     await insertionSort([...array]); break;
-      case 'merge':         await mergeSort([...array]); break;
-      case 'quick':         await quickSort([...array]); break;
-      case 'heap':          await heapSort([...array]); break;
-      case 'shell':         await shellSort([...array]); break;
-      case 'linear':        await linearSearch([...array]); break;
-      case 'binary':        await binarySearch([...array]); break;
-      case 'jump':          await jumpSearch([...array]); break;
-      case 'interpolation': await interpolationSearch([...array]); break;
-      case 'exponential':   await exponentialSearch([...array]); break;
+// ── Run dispatcher ──
+async function runAlgorithm(){
+  if(isRunning)return;stopFlag=false;clearLog();resetStats();setRunning(true);
+  array=parseArray();
+  if(array.length<2){log('Need at least 2 elements.','warn');setRunning(false);return;}
+  log('Array: ['+array.join(', ')+']');log('Running: '+currentAlgo.toUpperCase());
+  try{
+    switch(currentAlgo){
+      case 'bubble':await bubbleSort([...array]);break;
+      case 'selection':await selectionSort([...array]);break;
+      case 'insertion':await insertionSort([...array]);break;
+      case 'merge':await mergeSort([...array]);break;
+      case 'quick':await quickSort([...array]);break;
+      case 'heap':await heapSort([...array]);break;
+      case 'shell':await shellSort([...array]);break;
+      case 'linear':await linearSearch([...array]);break;
+      case 'binary':await binarySearch([...array]);break;
+      case 'jump':await jumpSearch([...array]);break;
+      case 'interpolation':await interpolationSearch([...array]);break;
+      case 'exponential':await exponentialSearch([...array]);break;
     }
-  } catch(e) { /* stopped */ }
-
-  if (!stopFlag) log(`Done! Comparisons: ${comparisons}, Swaps: ${swaps}`, 'success');
+  }catch(e){}
+  if(!stopFlag)log('Done! Comparisons: '+comparisons+', Swaps: '+swaps,'success');
   setRunning(false);
 }
 
-// ══════════════════════════════════════
-//  SORTING ALGORITHMS
-// ══════════════════════════════════════
-async function bubbleSort(arr) {
-  const n = arr.length;
-  renderBars(arr);
-  for (let i = 0; i < n - 1 && !stopFlag; i++) {
-    for (let j = 0; j < n - i - 1 && !stopFlag; j++) {
-      incCmp(); incStep();
-      // highlight comparing
-      animateBar(j, 'comparing'); animateBar(j+1, 'comparing');
+// ════ SORT ALGORITHMS ════
+async function bubbleSort(arr){
+  const n=arr.length;renderBars(arr);
+  for(let i=0;i<n-1&&!stopFlag;i++){
+    for(let j=0;j<n-i-1&&!stopFlag;j++){
+      incCmp();incStep();
+      animateBar(j,'comparing');animateBar(j+1,'comparing');
       await sleep(getDelay());
-      log(`Comparing arr[${j}]=${arr[j]} and arr[${j+1}]=${arr[j+1]}`);
-
-      if (arr[j] > arr[j+1]) {
-        incSwp();
-        [arr[j], arr[j+1]] = [arr[j+1], arr[j]];
-        animateBar(j, 'swapping'); animateBar(j+1, 'swapping');
-        log(`  Swapped → [${arr[j]}, ${arr[j+1]}]`, 'highlight');
-        await animateSwap(j, j+1, arr);
-        await sleep(getDelay());
+      log('Comparing arr['+j+']='+arr[j]+' and arr['+(j+1)+']='+arr[j+1]);
+      if(arr[j]>arr[j+1]){
+        incSwp();[arr[j],arr[j+1]]=[arr[j+1],arr[j]];
+        animateBar(j,'swapping');animateBar(j+1,'swapping');
+        log('  Swapped','highlight');await animateSwap(j,j+1,arr);await sleep(getDelay());
       }
-      clearBar(j); clearBar(j+1);
+      clearBar(j);clearBar(j+1);
     }
-    animateBar(n-1-i, 'sorted');
+    animateBar(n-1-i,'sorted');
   }
-  animateBar(0, 'sorted');
-  log('Array sorted!', 'success');
-  await celebrateAll(arr.length);
+  animateBar(0,'sorted');log('Sorted!','success');await celebrateAll(arr.length);
 }
-
-async function selectionSort(arr) {
-  const n = arr.length;
-  renderBars(arr);
-  for (let i = 0; i < n - 1 && !stopFlag; i++) {
-    let minIdx = i;
-    animateBar(i, 'pivot');
-    for (let j = i + 1; j < n && !stopFlag; j++) {
-      incCmp(); incStep();
-      animateBar(j, 'comparing');
-      await sleep(getDelay() * 0.6);
-      log(`Comparing arr[${j}]=${arr[j]} with min=${arr[minIdx]}`);
-      if (arr[j] < arr[minIdx]) {
-        if (minIdx !== i) clearBar(minIdx);
-        minIdx = j;
-        animateBar(minIdx, 'pivot');
-      } else {
-        clearBar(j);
-      }
-      await sleep(getDelay() * 0.4);
+async function selectionSort(arr){
+  const n=arr.length;renderBars(arr);
+  for(let i=0;i<n-1&&!stopFlag;i++){
+    let minIdx=i;animateBar(i,'pivot');
+    for(let j=i+1;j<n&&!stopFlag;j++){
+      incCmp();incStep();animateBar(j,'comparing');await sleep(getDelay()*.6);
+      if(arr[j]<arr[minIdx]){if(minIdx!==i)clearBar(minIdx);minIdx=j;animateBar(minIdx,'pivot');}
+      else clearBar(j);await sleep(getDelay()*.4);
     }
-    if (minIdx !== i) {
-      incSwp();
-      [arr[i], arr[minIdx]] = [arr[minIdx], arr[i]];
-      animateBar(i, 'swapping'); animateBar(minIdx, 'swapping');
-      log(`Swapped arr[${i}] and arr[${minIdx}]`, 'highlight');
-      await animateSwap(i, minIdx, arr);
-      await sleep(getDelay());
+    if(minIdx!==i){incSwp();[arr[i],arr[minIdx]]=[arr[minIdx],arr[i]];animateBar(i,'swapping');animateBar(minIdx,'swapping');await animateSwap(i,minIdx,arr);await sleep(getDelay());}
+    clearBar(minIdx);animateBar(i,'sorted');
+  }
+  animateBar(arr.length-1,'sorted');log('Sorted!','success');await celebrateAll(arr.length);
+}
+async function insertionSort(arr){
+  const n=arr.length;renderBars(arr);animateBar(0,'sorted');
+  for(let i=1;i<n&&!stopFlag;i++){
+    const key=arr[i];let j=i-1;animateBar(i,'pivot');await sleep(getDelay());
+    while(j>=0&&arr[j]>key&&!stopFlag){
+      incCmp();incStep();animateBar(j,'comparing');arr[j+1]=arr[j];incSwp();
+      await animateSwap(j,j+1,arr);await sleep(getDelay()*.7);
+      clearBar(j+1);animateBar(j+1,'sorted');j--;
     }
-    clearBar(minIdx);
-    animateBar(i, 'sorted');
+    arr[j+1]=key;clearBar(j+1);animateBar(j+1,'sorted');rebuildBar(j+1,arr);
+    await sleep(getDelay()*.5);
+    for(let k=0;k<=i;k++)animateBar(k,'sorted');
   }
-  animateBar(n - 1, 'sorted');
-  log('Array sorted!', 'success');
-  await celebrateAll(arr.length);
+  log('Sorted!','success');await celebrateAll(arr.length);
 }
-
-async function insertionSort(arr) {
-  const n = arr.length;
-  renderBars(arr);
-  animateBar(0, 'sorted');
-  for (let i = 1; i < n && !stopFlag; i++) {
-    const key = arr[i];
-    let j = i - 1;
-    animateBar(i, 'pivot');
-    log(`Key = ${key}, inserting into sorted portion`);
-    await sleep(getDelay());
-
-    while (j >= 0 && arr[j] > key && !stopFlag) {
-      incCmp(); incStep();
-      animateBar(j, 'comparing');
-      arr[j + 1] = arr[j];
-      incSwp();
-      await animateSwap(j, j+1, arr);
-      await sleep(getDelay() * 0.7);
-      clearBar(j+1);
-      animateBar(j+1, 'sorted');
-      j--;
-    }
-    arr[j + 1] = key;
-    clearBar(j+1); animateBar(j+1, 'sorted');
-    rebuildBar(j+1, arr);
-    log(`Placed ${key} at index ${j+1}`, 'highlight');
-    await sleep(getDelay() * 0.5);
-    for (let k = 0; k <= i; k++) animateBar(k, 'sorted');
+async function mergeSort(arr){
+  renderBars(arr);await mergeSortH(arr,0,arr.length-1);
+  if(!stopFlag){for(let i=0;i<arr.length;i++)animateBar(i,'sorted');log('Sorted!','success');}
+}
+async function mergeSortH(arr,l,r){
+  if(l>=r||stopFlag)return;
+  const mid=Math.floor((l+r)/2);
+  log('Divide ['+l+'..'+r+'] → ['+l+'..'+mid+'] + ['+(mid+1)+'..'+r+']');
+  for(let i=l;i<=r;i++)animateBar(i,'comparing');await sleep(getDelay()*.7);
+  for(let i=l;i<=r;i++)clearBar(i);
+  await mergeSortH(arr,l,mid);await mergeSortH(arr,mid+1,r);await doMerge(arr,l,mid,r);
+}
+async function doMerge(arr,l,mid,r){
+  if(stopFlag)return;
+  const left=arr.slice(l,mid+1),right=arr.slice(mid+1,r+1);
+  let i=0,j=0,k=l;
+  log('Merging ['+l+'..'+mid+'] and ['+(mid+1)+'..'+r+']','highlight');
+  while(i<left.length&&j<right.length&&!stopFlag){
+    incCmp();incStep();animateBar(k,'swapping');await sleep(getDelay()*.8);
+    if(left[i]<=right[j])arr[k]=left[i++];else arr[k]=right[j++];
+    incSwp();rebuildBar(k,arr);clearBar(k);animateBar(k,'pivot');k++;await sleep(getDelay()*.4);
   }
-  log('Array sorted!', 'success');
-  await celebrateAll(arr.length);
+  while(i<left.length&&!stopFlag){arr[k]=left[i++];rebuildBar(k,arr);animateBar(k,'pivot');k++;await sleep(getDelay()*.3);}
+  while(j<right.length&&!stopFlag){arr[k]=right[j++];rebuildBar(k,arr);animateBar(k,'pivot');k++;await sleep(getDelay()*.3);}
+  for(let x=l;x<=r;x++){clearBar(x);animateBar(x,'sorted');}
 }
-
-async function mergeSort(arr) {
-  renderBars(arr);
-  await mergeSortHelper(arr, 0, arr.length - 1);
-  if (!stopFlag) {
-    for (let i = 0; i < arr.length; i++) animateBar(i, 'sorted');
-    log('Array sorted!', 'success');
-  }
+async function quickSort(arr){
+  renderBars(arr);await quickSortH(arr,0,arr.length-1);
+  if(!stopFlag){for(let i=0;i<arr.length;i++)animateBar(i,'sorted');log('Sorted!','success');}
 }
-
-async function mergeSortHelper(arr, l, r) {
-  if (l >= r || stopFlag) return;
-  const mid = Math.floor((l + r) / 2);
-  log(`Divide [${l}..${r}] → [${l}..${mid}] + [${mid+1}..${r}]`);
-  // Highlight the current partition
-  for (let i = l; i <= r; i++) animateBar(i, 'comparing');
-  await sleep(getDelay() * 0.7);
-  for (let i = l; i <= r; i++) clearBar(i);
-
-  await mergeSortHelper(arr, l, mid);
-  await mergeSortHelper(arr, mid + 1, r);
-  await merge(arr, l, mid, r);
+async function quickSortH(arr,low,high){
+  if(low>=high||stopFlag)return;
+  const pi=await qpartition(arr,low,high);
+  await quickSortH(arr,low,pi-1);await quickSortH(arr,pi+1,high);
 }
-
-async function merge(arr, l, mid, r) {
-  if (stopFlag) return;
-  const left = arr.slice(l, mid + 1);
-  const right = arr.slice(mid + 1, r + 1);
-  let i = 0, j = 0, k = l;
-  log(`Merging [${l}..${mid}] and [${mid+1}..${r}]`, 'highlight');
-
-  while (i < left.length && j < right.length && !stopFlag) {
-    incCmp(); incStep();
-    animateBar(k, 'swapping');
-    await sleep(getDelay() * 0.8);
-    if (left[i] <= right[j]) {
-      arr[k] = left[i++];
-    } else {
-      arr[k] = right[j++];
-    }
-    incSwp();
-    rebuildBar(k, arr);
-    clearBar(k); animateBar(k, 'pivot');
-    k++;
-    await sleep(getDelay() * 0.4);
-  }
-  while (i < left.length && !stopFlag) { arr[k] = left[i++]; rebuildBar(k, arr); animateBar(k, 'pivot'); k++; await sleep(getDelay() * 0.3); }
-  while (j < right.length && !stopFlag) { arr[k] = right[j++]; rebuildBar(k, arr); animateBar(k, 'pivot'); k++; await sleep(getDelay() * 0.3); }
-
-  for (let x = l; x <= r; x++) { clearBar(x); animateBar(x, 'sorted'); }
-}
-
-async function quickSort(arr) {
-  renderBars(arr);
-  await quickSortHelper(arr, 0, arr.length - 1);
-  if (!stopFlag) {
-    for (let i = 0; i < arr.length; i++) animateBar(i, 'sorted');
-    log('Array sorted!', 'success');
-  }
-}
-
-async function quickSortHelper(arr, low, high) {
-  if (low >= high || stopFlag) return;
-  const pi = await partition(arr, low, high);
-  await quickSortHelper(arr, low, pi - 1);
-  await quickSortHelper(arr, pi + 1, high);
-}
-
-async function partition(arr, low, high) {
-  const pivot = arr[high];
-  animateBar(high, 'pivot');
-  log(`Pivot = ${pivot} at index ${high}`);
-  let i = low - 1;
-  for (let j = low; j < high && !stopFlag; j++) {
-    incCmp(); incStep();
-    animateBar(j, 'comparing');
-    await sleep(getDelay() * 0.8);
-    if (arr[j] <= pivot) {
-      i++;
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-      incSwp();
-      if (i !== j) {
-        animateBar(i, 'swapping'); animateBar(j, 'swapping');
-        await animateSwap(i, j, arr);
-        log(`  Swapped arr[${i}]=${arr[i]} with arr[${j}]=${arr[j]}`);
-        await sleep(getDelay() * 0.5);
-      }
-    }
+async function qpartition(arr,low,high){
+  const pivot=arr[high];animateBar(high,'pivot');log('Pivot='+pivot+' at '+high);
+  let i=low-1;
+  for(let j=low;j<high&&!stopFlag;j++){
+    incCmp();incStep();animateBar(j,'comparing');await sleep(getDelay()*.8);
+    if(arr[j]<=pivot){i++;[arr[i],arr[j]]=[arr[j],arr[i]];incSwp();if(i!==j){animateBar(i,'swapping');animateBar(j,'swapping');await animateSwap(i,j,arr);await sleep(getDelay()*.5);}}
     clearBar(j);
   }
-  [arr[i+1], arr[high]] = [arr[high], arr[i+1]];
-  incSwp();
-  animateBar(high, 'swapping'); animateBar(i+1, 'swapping');
-  await animateSwap(i+1, high, arr);
-  await sleep(getDelay() * 0.5);
-  animateBar(i+1, 'sorted');
-  return i + 1;
+  [arr[i+1],arr[high]]=[arr[high],arr[i+1]];incSwp();animateBar(high,'swapping');animateBar(i+1,'swapping');await animateSwap(i+1,high,arr);await sleep(getDelay()*.5);animateBar(i+1,'sorted');return i+1;
 }
-
-async function heapSort(arr) {
-  const n = arr.length;
-  renderBars(arr);
-  log('Building max heap...');
-  for (let i = Math.floor(n / 2) - 1; i >= 0 && !stopFlag; i--) {
-    await heapify(arr, n, i);
+async function heapSort(arr){
+  const n=arr.length;renderBars(arr);log('Building max heap...');
+  for(let i=Math.floor(n/2)-1;i>=0&&!stopFlag;i--)await heapify(arr,n,i);
+  log('Extracting...','highlight');
+  for(let i=n-1;i>0&&!stopFlag;i--){
+    [arr[0],arr[i]]=[arr[i],arr[0]];incSwp();incStep();animateBar(0,'swapping');animateBar(i,'swapping');
+    await animateSwap(0,i,arr);await sleep(getDelay()*.6);animateBar(i,'sorted');log('Placed '+arr[i]+' at '+i);await heapify(arr,i,0);
   }
-  log('Heap built. Extracting elements...', 'highlight');
-  for (let i = n - 1; i > 0 && !stopFlag; i--) {
-    [arr[0], arr[i]] = [arr[i], arr[0]];
-    incSwp(); incStep();
-    animateBar(0, 'swapping'); animateBar(i, 'swapping');
-    await animateSwap(0, i, arr);
-    await sleep(getDelay() * 0.6);
-    animateBar(i, 'sorted');
-    log(`Placed ${arr[i]} at position ${i}`);
-    await heapify(arr, i, 0);
-  }
-  animateBar(0, 'sorted');
-  log('Array sorted!', 'success');
+  animateBar(0,'sorted');log('Sorted!','success');
 }
-
-async function heapify(arr, n, i) {
-  let largest = i, l = 2*i+1, r = 2*i+2;
-  if (l < n) { incCmp(); if (arr[l] > arr[largest]) largest = l; }
-  if (r < n) { incCmp(); if (arr[r] > arr[largest]) largest = r; }
-  if (largest !== i && !stopFlag) {
-    [arr[i], arr[largest]] = [arr[largest], arr[i]];
-    incSwp();
-    animateBar(i, 'comparing'); animateBar(largest, 'comparing');
-    await animateSwap(i, largest, arr);
-    await sleep(getDelay() * 0.5);
-    clearBar(i); clearBar(largest);
-    await heapify(arr, n, largest);
+async function heapify(arr,n,i){
+  let largest=i,l=2*i+1,r=2*i+2;
+  if(l<n){incCmp();if(arr[l]>arr[largest])largest=l;}
+  if(r<n){incCmp();if(arr[r]>arr[largest])largest=r;}
+  if(largest!==i&&!stopFlag){
+    [arr[i],arr[largest]]=[arr[largest],arr[i]];incSwp();
+    animateBar(i,'comparing');animateBar(largest,'comparing');await animateSwap(i,largest,arr);await sleep(getDelay()*.5);
+    clearBar(i);clearBar(largest);await heapify(arr,n,largest);
   }
 }
-
-async function shellSort(arr) {
-  const n = arr.length;
-  renderBars(arr);
-  let gap = Math.floor(n / 2);
-  log(`Starting Shell Sort, initial gap = ${gap}`);
-  while (gap > 0 && !stopFlag) {
-    log(`Gap = ${gap}`, 'highlight');
-    for (let i = gap; i < n && !stopFlag; i++) {
-      const temp = arr[i];
-      let j = i;
-      animateBar(i, 'pivot');
-      await sleep(getDelay() * 0.5);
-      while (j >= gap && arr[j-gap] > temp && !stopFlag) {
-        incCmp(); incStep();
-        animateBar(j-gap, 'comparing');
-        arr[j] = arr[j-gap];
-        incSwp();
-        rebuildBar(j, arr);
-        await sleep(getDelay() * 0.6);
-        clearBar(j-gap);
-        j -= gap;
+async function shellSort(arr){
+  const n=arr.length;renderBars(arr);let gap=Math.floor(n/2);log('Shell Sort, gap='+gap);
+  while(gap>0&&!stopFlag){
+    log('Gap='+gap,'highlight');
+    for(let i=gap;i<n&&!stopFlag;i++){
+      const temp=arr[i];let j=i;animateBar(i,'pivot');await sleep(getDelay()*.5);
+      while(j>=gap&&arr[j-gap]>temp&&!stopFlag){
+        incCmp();incStep();animateBar(j-gap,'comparing');arr[j]=arr[j-gap];incSwp();rebuildBar(j,arr);await sleep(getDelay()*.6);clearBar(j-gap);j-=gap;
       }
-      arr[j] = temp;
-      rebuildBar(j, arr);
-      clearBar(j);
+      arr[j]=temp;rebuildBar(j,arr);clearBar(j);
     }
-    gap = Math.floor(gap / 2);
+    gap=Math.floor(gap/2);
   }
-  for (let i = 0; i < n; i++) animateBar(i, 'sorted');
-  log('Array sorted!', 'success');
+  for(let i=0;i<n;i++)animateBar(i,'sorted');log('Sorted!','success');
 }
 
-// ══════════════════════════════════════
-//  SEARCHING ALGORITHMS
-// ══════════════════════════════════════
-function getTarget() {
-  const t = parseInt(document.getElementById('target-input').value);
-  return isNaN(t) ? null : t;
+// ════ SEARCH ALGORITHMS ════
+function getTarget(){const t=parseInt(document.getElementById('target-input').value);return isNaN(t)?null:t;}
+async function linearSearch(arr){
+  const target=getTarget();if(target===null){log('Enter target!','warn');return;}
+  renderSearchCells(arr,{},{});log('Linear search for '+target);
+  for(let i=0;i<arr.length&&!stopFlag;i++){
+    incCmp();incStep();log('Checking ['+i+']='+arr[i]);
+    renderSearchCells(arr,{[i]:'checking'},{target:i});await sleep(getDelay());
+    if(arr[i]===target){renderSearchCells(arr,{[i]:'found-cell'},{});log('Found at '+i+'!','success');gsap.fromTo('#cell-'+i,{scale:1},{scale:1.3,duration:.3,yoyo:true,repeat:3});return;}
+    const st={};for(let k=0;k<=i;k++)st[k]='eliminated';renderSearchCells(arr,st,{});await sleep(getDelay()*.3);
+  }
+  if(!stopFlag)log('Not found.','warn');
+}
+async function binarySearch(arr){
+  const target=getTarget();if(target===null){log('Enter target!','warn');return;}
+  arr.sort((a,b)=>a-b);document.getElementById('array-input').value=arr.join(', ');
+  renderSearchCells(arr,{},{});log('Sorted. Binary search for '+target);
+  let low=0,high=arr.length-1;
+  while(low<=high&&!stopFlag){
+    const mid=Math.floor((low+high)/2);incCmp();incStep();
+    const st={};for(let i=0;i<arr.length;i++){if(i<low||i>high)st[i]='eliminated';else if(i===mid)st[i]='mid-cell';else st[i]='range-cell';}
+    renderSearchCells(arr,st,{low,mid,high});log('low='+low+' mid='+mid+' high='+high+' → '+arr[mid]);await sleep(getDelay());
+    if(arr[mid]===target){const s={};for(let i=0;i<arr.length;i++)s[i]='eliminated';s[mid]='found-cell';renderSearchCells(arr,s,{});log('Found at '+mid+'!','success');gsap.fromTo('#cell-'+mid,{scale:1},{scale:1.3,duration:.3,yoyo:true,repeat:3});return;}
+    else if(arr[mid]<target)low=mid+1;else high=mid-1;
+    await sleep(getDelay()*.5);
+  }
+  if(!stopFlag)log('Not found.','warn');
+}
+async function jumpSearch(arr){
+  const target=getTarget();if(target===null){log('Enter target!','warn');return;}
+  arr.sort((a,b)=>a-b);document.getElementById('array-input').value=arr.join(', ');
+  const n=arr.length,step=Math.floor(Math.sqrt(n));let prev=0;
+  renderSearchCells(arr,{},{});log('Jump search, step='+step);
+  while(arr[Math.min(step,n)-1]<target&&!stopFlag){
+    const blk=Math.min(step,n)-1;const st={};for(let i=0;i<n;i++)st[i]='eliminated';st[blk]='checking';
+    renderSearchCells(arr,st,{});log('Jump to '+blk);incCmp();incStep();await sleep(getDelay());
+    prev=step;if(prev>=n){log('Not found.','warn');return;}
+  }
+  while(arr[prev]<target&&prev<Math.min(step,n)&&!stopFlag){
+    incCmp();incStep();const st={};for(let i=0;i<prev;i++)st[i]='eliminated';st[prev]='checking';
+    renderSearchCells(arr,st,{target:prev});log('Check '+prev+'='+arr[prev]);await sleep(getDelay());prev++;
+  }
+  if(!stopFlag&&arr[prev]===target){const st={};for(let i=0;i<n;i++)st[i]='eliminated';st[prev]='found-cell';renderSearchCells(arr,st,{});log('Found at '+prev+'!','success');}
+  else if(!stopFlag)log('Not found.','warn');
+}
+async function interpolationSearch(arr){
+  const target=getTarget();if(target===null){log('Enter target!','warn');return;}
+  arr.sort((a,b)=>a-b);document.getElementById('array-input').value=arr.join(', ');
+  const n=arr.length;renderSearchCells(arr,{},{});log('Interpolation search for '+target);
+  let low=0,high=n-1;
+  while(low<=high&&target>=arr[low]&&target<=arr[high]&&!stopFlag){
+    if(arr[high]===arr[low]){if(arr[low]===target){const s={};for(let i=0;i<n;i++)s[i]='eliminated';s[low]='found-cell';renderSearchCells(arr,s,{});log('Found!','success');}return;}
+    const pos=low+Math.floor((target-arr[low])*(high-low)/(arr[high]-arr[low]));
+    incCmp();incStep();
+    const st={};for(let i=0;i<n;i++){if(i<low||i>high)st[i]='eliminated';else if(i===pos)st[i]='mid-cell';else st[i]='range-cell';}
+    renderSearchCells(arr,st,{low,pos,high});log('pos='+pos+' arr['+pos+']='+arr[pos]);await sleep(getDelay());
+    if(arr[pos]===target){const s={};for(let i=0;i<n;i++)s[i]='eliminated';s[pos]='found-cell';renderSearchCells(arr,s,{});log('Found at '+pos+'!','success');gsap.fromTo('#cell-'+pos,{scale:1},{scale:1.3,duration:.3,yoyo:true,repeat:3});return;}
+    else if(arr[pos]<target)low=pos+1;else high=pos-1;
+    await sleep(getDelay()*.4);
+  }
+  if(!stopFlag)log('Not found.','warn');
+}
+async function exponentialSearch(arr){
+  const target=getTarget();if(target===null){log('Enter target!','warn');return;}
+  arr.sort((a,b)=>a-b);document.getElementById('array-input').value=arr.join(', ');
+  const n=arr.length;renderSearchCells(arr,{},{});log('Exponential search for '+target);
+  if(arr[0]===target){const s={};for(let i=0;i<n;i++)s[i]='eliminated';s[0]='found-cell';renderSearchCells(arr,s,{});log('Found at 0!','success');return;}
+  let i=1;
+  while(i<n&&arr[i]<=target&&!stopFlag){
+    incCmp();incStep();const st={};for(let k=0;k<n;k++)st[k]='eliminated';st[i]='checking';renderSearchCells(arr,st,{});log('Bound i='+i);await sleep(getDelay());i*=2;
+  }
+  if(stopFlag)return;
+  let low=Math.floor(i/2),high=Math.min(i,n-1);log('Binary in ['+low+'..'+high+']','highlight');
+  while(low<=high&&!stopFlag){
+    const mid=Math.floor((low+high)/2);incCmp();incStep();
+    const st={};for(let k=0;k<n;k++){if(k<low||k>high)st[k]='eliminated';else if(k===mid)st[k]='mid-cell';else st[k]='range-cell';}
+    renderSearchCells(arr,st,{low,mid,high});log('mid='+mid+'='+arr[mid]);await sleep(getDelay());
+    if(arr[mid]===target){const s={};for(let k=0;k<n;k++)s[k]='eliminated';s[mid]='found-cell';renderSearchCells(arr,s,{});log('Found at '+mid+'!','success');gsap.fromTo('#cell-'+mid,{scale:1},{scale:1.3,duration:.3,yoyo:true,repeat:3});return;}
+    else if(arr[mid]<target)low=mid+1;else high=mid-1;
+    await sleep(getDelay()*.4);
+  }
+  if(!stopFlag)log('Not found.','warn');
 }
 
-async function linearSearch(arr) {
-  let target = getTarget();
-  if (target === null) { log('Please enter a search target!', 'warn'); return; }
-  // Auto-sort check
-  renderSearchCells(arr, {}, {});
-  log(`Searching for ${target} in [${arr.join(', ')}]`);
+// ════════════════════════════════════════
+//  FIB TREE DRAWING (concepts tab)
+// ════════════════════════════════════════
+function drawFibTree(){
+  const n=parseInt(document.getElementById('fib-tree-n').value);
+  const canvas=document.getElementById('fib-tree-canvas');
+  const W=canvas.parentElement.offsetWidth||700;canvas.width=W;
+  const ctx=canvas.getContext('2d');ctx.clearRect(0,0,W,canvas.height);
+  const calls={};
+  function countCalls(k){
+    if(k<=1)return;
+    calls[k]=(calls[k]||0)+1;
+    countCalls(k-1);countCalls(k-2);
+  }
+  countCalls(n);
+  // draw tree recursively
+  function drawNode(k,x,y,spread){
+    const r=20,fontSize=13;
+    const isDup=(calls[k]||0)>0;
+    ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);
+    ctx.fillStyle=isDup?'rgba(191,95,255,0.25)':'rgba(0,212,255,0.15)';ctx.fill();
+    ctx.strokeStyle=isDup?'#bf5fff':'#00d4ff';ctx.lineWidth=1.5;ctx.stroke();
+    ctx.fillStyle=isDup?'#bf5fff':'#00d4ff';ctx.font=`bold ${fontSize}px JetBrains Mono,monospace`;ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('f('+k+')',x,y);
+    if(k<=1)return;
+    const newY=y+56,ns=spread*.52;
+    // left child
+    ctx.beginPath();ctx.moveTo(x-r*.7,y+r*.7);ctx.lineTo(x-spread+r*.7,newY-r*.7);ctx.strokeStyle='rgba(0,212,255,0.3)';ctx.lineWidth=1;ctx.stroke();
+    drawNode(k-1,x-spread,newY,ns);
+    // right child
+    ctx.beginPath();ctx.moveTo(x+r*.7,y+r*.7);ctx.lineTo(x+spread*0.4-r*.7,newY-r*.7);ctx.strokeStyle='rgba(191,95,255,0.3)';ctx.lineWidth=1;ctx.stroke();
+    drawNode(k-2,x+spread*0.4,newY,ns*0.7);
+  }
+  drawNode(n,W/2,30,W*.28);
+  // legend
+  ctx.font='11px JetBrains Mono,monospace';ctx.textAlign='left';
+  ctx.fillStyle='#bf5fff';ctx.fillText('● Repeated subproblem',12,canvas.height-12);
+  ctx.fillStyle='#00d4ff';ctx.fillText('● Unique call',W/2,canvas.height-12);
+}
 
-  for (let i = 0; i < arr.length && !stopFlag; i++) {
-    incCmp(); incStep();
-    log(`Checking index ${i}: arr[${i}] = ${arr[i]}`);
-    renderSearchCells(arr, {[i]: 'checking'}, {target: i});
-    await sleep(getDelay());
+// ════════════════════════════════════════
+//  DP: FIBONACCI TABLE
+// ════════════════════════════════════════
+async function runFibDP(){
+  const n=parseInt(document.getElementById('fib-n').value);
+  const t=document.getElementById('fib-table');const info=document.getElementById('fib-info');
+  t.innerHTML='';const dp=new Array(n+1).fill(0);dp[0]=0;if(n>0)dp[1]=1;
+  // header
+  let hdr='<tr><th>Index</th>';for(let i=0;i<=n;i++)hdr+='<th>'+i+'</th>';hdr+='</tr>';
+  t.innerHTML=hdr+'<tr id="fib-row"><td style="color:var(--accent4)">fib(i)</td>'+Array(n+1).fill('<td>—</td>').join('')+'</tr>';
+  const row=document.getElementById('fib-row');
+  const getCells=()=>row.querySelectorAll('td');
+  const d=Math.max(180,600-n*30);
+  for(let i=0;i<=n;i++){
+    if(i>=2)dp[i]=dp[i-1]+dp[i-2];
+    const cells=getCells();
+    // clear prev active
+    cells.forEach(c=>c.classList.remove('active-cell'));
+    cells[i+1].classList.add('active-cell');cells[i+1].textContent=dp[i];
+    if(i>0)cells[i].classList.add('done-cell');
+    info.innerHTML='<strong>dp['+i+'] = '+(i>=2?'dp['+(i-1)+'] + dp['+(i-2)+'] = '+dp[i-1]+' + '+dp[i-2]+' = ':'base case = ')+'</strong><span class="acc">'+dp[i]+'</span>';
+    await sleep(d);
+  }
+  cells=getCells();cells.forEach(c=>{c.classList.remove('active-cell');if(c.textContent!=='—'&&c.textContent!=='fib(i)')c.classList.add('done-cell');});
+  info.innerHTML='<strong>Done!</strong> fib('+n+') = <span class="acc">'+dp[n]+'</span>';
+}
 
-    if (arr[i] === target) {
-      renderSearchCells(arr, {[i]: 'found-cell'}, {});
-      log(`Found ${target} at index ${i}!`, 'success');
-      gsap.fromTo(`#cell-${i}`, {scale:1}, {scale:1.3, duration:0.3, yoyo:true, repeat:3, ease:'power2.inOut'});
-      return;
+// ════════════════════════════════════════
+//  DP: LCS
+// ════════════════════════════════════════
+async function runLCS(){
+  const s1=document.getElementById('lcs-s1').value.toUpperCase();
+  const s2=document.getElementById('lcs-s2').value.toUpperCase();
+  const m=s1.length,n=s2.length;
+  const dp=Array.from({length:m+1},()=>new Array(n+1).fill(0));
+  const t=document.getElementById('lcs-table');const info=document.getElementById('lcs-info');
+  // Build header
+  let html='<tr><th></th><th>ε</th>'+[...s2].map(c=>'<th>'+c+'</th>').join('')+'</tr>';
+  html+='<tr><th>ε</th>'+Array(n+1).fill('<td class="done-cell">0</td>').join('')+'</tr>';
+  for(let i=1;i<=m;i++){html+='<tr><th>'+s1[i-1]+'</th>'+Array(n+1).fill('<td>—</td>').join('')+'</tr>';}
+  t.innerHTML=html;
+  const rows=t.querySelectorAll('tr');
+  const getCell=(i,j)=>rows[i+1].querySelectorAll('td')[j];
+  const d=Math.max(60,350-m*n*2);
+  for(let i=1;i<=m;i++){
+    for(let j=1;j<=n;j++){
+      if(s1[i-1]===s2[j-1]){dp[i][j]=dp[i-1][j-1]+1;}
+      else{dp[i][j]=Math.max(dp[i-1][j],dp[i][j-1]);}
+      // clear old active
+      t.querySelectorAll('.active-cell').forEach(c=>c.classList.remove('active-cell'));
+      const cell=getCell(i,j);cell.textContent=dp[i][j];
+      cell.classList.add('active-cell');
+      if(s1[i-1]===s2[j-1])cell.classList.add('highlight-cell');
+      info.innerHTML=`<strong>dp[${i}][${j}]</strong>: s1[${i}]='${s1[i-1]}' ${s1[i-1]===s2[j-1]?'==':'≠'} s2[${j}]='${s2[j-1]}' → <span class="acc">${dp[i][j]}</span>`;
+      await sleep(d);cell.classList.remove('active-cell');cell.classList.add('done-cell');
     }
-    // Mark as eliminated
-    const states = {};
-    for (let k = 0; k <= i; k++) states[k] = 'eliminated';
-    renderSearchCells(arr, states, {});
-    await sleep(getDelay() * 0.3);
   }
-  if (!stopFlag) log(`${target} not found in array.`, 'warn');
+  // trace back
+  let lcs='',i=m,j=n;
+  while(i>0&&j>0){if(s1[i-1]===s2[j-1]){lcs=s1[i-1]+lcs;i--;j--;}else if(dp[i-1][j]>dp[i][j-1])i--;else j--;}
+  info.innerHTML='<strong>LCS length: <span class="acc">'+dp[m][n]+'</span></strong>  |  LCS string: <span style="color:var(--accent4)">'+lcs+'</span>';
 }
 
-async function binarySearch(arr) {
-  let target = getTarget();
-  if (target === null) { log('Please enter a search target!', 'warn'); return; }
-  // Sort for binary search
-  arr.sort((a, b) => a - b);
-  document.getElementById('array-input').value = arr.join(', ');
-  renderSearchCells(arr, {}, {});
-  log(`Array sorted: [${arr.join(', ')}]`);
-  log(`Binary searching for ${target}`);
-
-  let low = 0, high = arr.length - 1;
-  while (low <= high && !stopFlag) {
-    const mid = Math.floor((low + high) / 2);
-    incCmp(); incStep();
-
-    // Build states
-    const states = {};
-    for (let i = 0; i < arr.length; i++) {
-      if (i < low || i > high) states[i] = 'eliminated';
-      else if (i === mid) states[i] = 'mid-cell';
-      else states[i] = 'range-cell';
-    }
-    renderSearchCells(arr, states, {low, mid, high});
-    log(`low=${low}, mid=${mid}, high=${high} → arr[${mid}]=${arr[mid]}`);
-    await sleep(getDelay());
-
-    if (arr[mid] === target) {
-      const s = {}; for (let i=0;i<arr.length;i++) s[i]='eliminated';
-      s[mid] = 'found-cell';
-      renderSearchCells(arr, s, {});
-      log(`Found ${target} at index ${mid}!`, 'success');
-      gsap.fromTo(`#cell-${mid}`, {scale:1}, {scale:1.3, duration:0.3, yoyo:true, repeat:3});
-      return;
-    } else if (arr[mid] < target) {
-      log(`arr[${mid}]=${arr[mid]} < ${target}, search right half`);
-      low = mid + 1;
-    } else {
-      log(`arr[${mid}]=${arr[mid]} > ${target}, search left half`);
-      high = mid - 1;
-    }
-    await sleep(getDelay() * 0.5);
-  }
-  if (!stopFlag) log(`${target} not found.`, 'warn');
-}
-
-async function jumpSearch(arr) {
-  let target = getTarget();
-  if (target === null) { log('Please enter a search target!', 'warn'); return; }
-  arr.sort((a,b)=>a-b);
-  document.getElementById('array-input').value = arr.join(', ');
-  const n = arr.length;
-  const step = Math.floor(Math.sqrt(n));
-  let prev = 0;
-  renderSearchCells(arr, {}, {});
-  log(`Array sorted. Step = √${n} = ${step}`);
-  log(`Jump searching for ${target}`);
-
-  while (arr[Math.min(step, n) - 1] < target && !stopFlag) {
-    const blk = Math.min(step, n) - 1;
-    const states = {};
-    for (let i=0;i<n;i++) states[i]='eliminated';
-    states[blk] = 'checking';
-    renderSearchCells(arr, states, {});
-    log(`Jumping to index ${blk}: arr[${blk}]=${arr[blk]} < ${target}, jump ahead`);
-    incCmp(); incStep();
-    await sleep(getDelay());
-    prev = step;
-    if (prev >= n) { log(`${target} not found.`, 'warn'); return; }
-  }
-  log(`Linear search from index ${prev} to ${Math.min(step, n)-1}`);
-  while (arr[prev] < target && prev < Math.min(step, n) && !stopFlag) {
-    incCmp(); incStep();
-    const states = {};
-    for (let i=0;i<prev;i++) states[i]='eliminated';
-    states[prev] = 'checking';
-    renderSearchCells(arr, states, {target:prev});
-    log(`Checking arr[${prev}]=${arr[prev]}`);
-    await sleep(getDelay());
-    prev++;
-  }
-  if (!stopFlag && arr[prev] === target) {
-    const states = {};
-    for (let i=0;i<n;i++) states[i]='eliminated';
-    states[prev] = 'found-cell';
-    renderSearchCells(arr, states, {});
-    log(`Found ${target} at index ${prev}!`, 'success');
-  } else if (!stopFlag) {
-    log(`${target} not found.`, 'warn');
-  }
-}
-
-async function interpolationSearch(arr) {
-  let target = getTarget();
-  if (target === null) { log('Please enter a search target!', 'warn'); return; }
-  arr.sort((a,b)=>a-b);
-  document.getElementById('array-input').value = arr.join(', ');
-  const n = arr.length;
-  renderSearchCells(arr, {}, {});
-  log(`Array sorted. Interpolation searching for ${target}`);
-  let low = 0, high = n - 1;
-
-  while (low <= high && target >= arr[low] && target <= arr[high] && !stopFlag) {
-    if (arr[high] === arr[low]) {
-      if (arr[low] === target) {
-        const s={}; for(let i=0;i<n;i++)s[i]='eliminated'; s[low]='found-cell';
-        renderSearchCells(arr,s,{});
-        log(`Found at index ${low}!`,'success'); return;
+// ════════════════════════════════════════
+//  DP: MATRIX CHAIN
+// ════════════════════════════════════════
+async function runMCM(){
+  const dims=document.getElementById('mcm-dims').value.split(',').map(Number).filter(n=>!isNaN(n)&&n>0);
+  if(dims.length<3){document.getElementById('mcm-info').textContent='Need at least 3 dimensions (for 2 matrices).';return;}
+  const n=dims.length-1;
+  const dp=Array.from({length:n},()=>new Array(n).fill(0));
+  const t=document.getElementById('mcm-table');const info=document.getElementById('mcm-info');
+  // headers
+  const names=Array.from({length:n},(_,i)=>'M'+(i+1));
+  let html='<tr><th></th>'+names.map(n=>'<th>'+n+'</th>').join('')+'</tr>';
+  for(let i=0;i<n;i++){html+='<tr><th>'+names[i]+'</th>'+Array(n).fill('<td>—</td>').join('')+'</tr>';}
+  t.innerHTML=html;
+  const rows=t.querySelectorAll('tr');
+  const getCell=(i,j)=>rows[i+1].querySelectorAll('td')[j];
+  const d=300;
+  // init diagonal
+  for(let i=0;i<n;i++){dp[i][i]=0;getCell(i,i).textContent='0';getCell(i,i).classList.add('done-cell');}
+  for(let len=2;len<=n;len++){
+    for(let i=0;i<=n-len;i++){
+      const j=i+len-1;dp[i][j]=Infinity;
+      for(let k=i;k<j;k++){
+        const cost=dp[i][k]+dp[k+1][j]+dims[i]*dims[k+1]*dims[j+1];
+        if(cost<dp[i][j]){dp[i][j]=cost;}
       }
-      break;
-    }
-    const pos = low + Math.floor((target - arr[low]) * (high - low) / (arr[high] - arr[low]));
-    incCmp(); incStep();
-
-    const states = {};
-    for (let i=0;i<n;i++) {
-      if (i<low||i>high) states[i]='eliminated';
-      else if (i===pos) states[i]='mid-cell';
-      else states[i]='range-cell';
-    }
-    renderSearchCells(arr, states, {low, pos, high});
-    log(`Estimated pos=${pos}, arr[${pos}]=${arr[pos]}`);
-    await sleep(getDelay());
-
-    if (arr[pos] === target) {
-      const s={}; for(let i=0;i<n;i++)s[i]='eliminated'; s[pos]='found-cell';
-      renderSearchCells(arr,s,{});
-      log(`Found ${target} at index ${pos}!`,'success');
-      gsap.fromTo(`#cell-${pos}`,{scale:1},{scale:1.3,duration:0.3,yoyo:true,repeat:3});
-      return;
-    } else if (arr[pos] < target) { low = pos + 1; }
-    else { high = pos - 1; }
-    await sleep(getDelay() * 0.4);
-  }
-  if (!stopFlag) log(`${target} not found.`, 'warn');
-}
-
-async function exponentialSearch(arr) {
-  let target = getTarget();
-  if (target === null) { log('Please enter a search target!', 'warn'); return; }
-  arr.sort((a,b)=>a-b);
-  document.getElementById('array-input').value = arr.join(', ');
-  const n = arr.length;
-  renderSearchCells(arr, {}, {});
-  log(`Array sorted. Exponential searching for ${target}`);
-
-  if (arr[0] === target) {
-    const s={}; for(let i=0;i<n;i++)s[i]='eliminated'; s[0]='found-cell';
-    renderSearchCells(arr,s,{}); log(`Found at index 0!`,'success'); return;
-  }
-
-  let i = 1;
-  while (i < n && arr[i] <= target && !stopFlag) {
-    incCmp(); incStep();
-    const states={};
-    for(let k=0;k<n;k++) states[k]='eliminated';
-    states[i]='checking';
-    renderSearchCells(arr,states,{});
-    log(`Checking bound i=${i}, arr[${i}]=${arr[i]}`);
-    await sleep(getDelay());
-    i *= 2;
-  }
-
-  if (stopFlag) return;
-  // Binary search in [i/2, min(i, n-1)]
-  let low = Math.floor(i/2), high = Math.min(i, n-1);
-  log(`Binary search in [${low}..${high}]`, 'highlight');
-  while (low <= high && !stopFlag) {
-    const mid = Math.floor((low+high)/2);
-    incCmp(); incStep();
-    const states={};
-    for(let k=0;k<n;k++) {
-      if(k<low||k>high) states[k]='eliminated';
-      else if(k===mid) states[k]='mid-cell';
-      else states[k]='range-cell';
-    }
-    renderSearchCells(arr,states,{low,mid,high});
-    log(`mid=${mid}, arr[${mid}]=${arr[mid]}`);
-    await sleep(getDelay());
-    if (arr[mid]===target) {
-      const s={}; for(let k=0;k<n;k++)s[k]='eliminated'; s[mid]='found-cell';
-      renderSearchCells(arr,s,{});
-      log(`Found ${target} at index ${mid}!`,'success');
-      gsap.fromTo(`#cell-${mid}`,{scale:1},{scale:1.3,duration:0.3,yoyo:true,repeat:3});
-      return;
-    } else if (arr[mid]<target) low=mid+1;
-    else high=mid-1;
-    await sleep(getDelay()*0.4);
-  }
-  if (!stopFlag) log(`${target} not found.`, 'warn');
-}
-
-// ══════════════════════════════════════
-//  BAR ANIMATION HELPERS
-// ══════════════════════════════════════
-function animateBar(idx, cls) {
-  const bar = document.getElementById(`bar-${idx}`);
-  if (!bar) return;
-  bar.className = 'bar ' + cls;
-}
-
-function clearBar(idx) {
-  const bar = document.getElementById(`bar-${idx}`);
-  if (!bar) return;
-  bar.className = 'bar';
-}
-
-function rebuildBar(idx, arr) {
-  const container = document.getElementById('bar-container');
-  if (!container) return;
-  const maxVal = Math.max(...arr);
-  const bar = document.getElementById(`bar-${idx}`);
-  const wrap = document.getElementById(`bw-${idx}`);
-  if (!bar || !wrap) return;
-  const heightPct = (arr[idx] / maxVal) * 92;
-  gsap.to(bar, { height: heightPct + '%', duration: 0.15, ease: 'power2.out' });
-  // update label
-  const label = wrap.querySelector('.bar-val');
-  if (label && arr.length <= 30) label.textContent = arr[idx];
-}
-
-async function animateSwap(i, j, arr) {
-  const maxVal = Math.max(...arr);
-  const bari = document.getElementById(`bar-${i}`);
-  const barj = document.getElementById(`bar-${j}`);
-  if (!bari || !barj) return;
-
-  const hi = (arr[i] / maxVal) * 92;
-  const hj = (arr[j] / maxVal) * 92;
-
-  gsap.to(bari, { height: hi + '%', duration: 0.18, ease: 'power2.out' });
-  gsap.to(barj, { height: hj + '%', duration: 0.18, ease: 'power2.out' });
-
-  // Also update labels
-  const wi = document.getElementById(`bw-${i}`);
-  const wj = document.getElementById(`bw-${j}`);
-  if (wi) { const l=wi.querySelector('.bar-val'); if(l&&arr.length<=30) l.textContent=arr[i]; }
-  if (wj) { const l=wj.querySelector('.bar-val'); if(l&&arr.length<=30) l.textContent=arr[j]; }
-
-  return new Promise(r => setTimeout(r, 180));
-}
-
-async function celebrateAll(n) {
-  for (let i = 0; i < n; i++) {
-    const bar = document.getElementById(`bar-${i}`);
-    if (bar) {
-      gsap.fromTo(bar, {scaleY:1.08},{scaleY:1,duration:0.3,delay:i*0.03,ease:'elastic.out(1,0.5)',transformOrigin:'bottom center'});
+      t.querySelectorAll('.active-cell').forEach(c=>c.classList.remove('active-cell'));
+      const cell=getCell(i,j);cell.textContent=dp[i][j];cell.classList.add('active-cell');
+      info.innerHTML=`<strong>dp[${i+1}][${j+1}]</strong> = min cost to multiply M${i+1}..M${j+1} = <span class="acc">${dp[i][j]}</span> scalar multiplications`;
+      await sleep(d);cell.classList.remove('active-cell');cell.classList.add('done-cell');
     }
   }
-  await sleep(n * 30 + 400);
+  info.innerHTML='<strong>Minimum cost:</strong> <span class="acc">'+dp[0][n-1]+'</span> scalar multiplications for M1..M'+n;
 }
+
+// ════════════════════════════════════════
+//  DP: KNAPSACK
+// ════════════════════════════════════════
+async function runKnapsack(){
+  const W=parseInt(document.getElementById('ks-cap').value);
+  const items=[{w:2,v:6},{w:2,v:10},{w:3,v:12},{w:5,v:13},{w:7,v:15}];
+  const n=items.length;
+  const dp=Array.from({length:n+1},()=>new Array(W+1).fill(0));
+  const t=document.getElementById('ks-table');const info=document.getElementById('ks-info');
+  // headers
+  let html='<tr><th>Item\\W</th>'+Array.from({length:W+1},(_,i)=>'<th>'+i+'</th>').join('')+'</tr>';
+  html+='<tr><th>0 (none)</th>'+Array(W+1).fill('<td class="done-cell">0</td>').join('')+'</tr>';
+  for(let i=1;i<=n;i++){html+='<tr><th>'+i+' (w='+items[i-1].w+',v='+items[i-1].v+')</th>'+Array(W+1).fill('<td>—</td>').join('')+'</tr>';}
+  t.innerHTML=html;
+  const rows=t.querySelectorAll('tr');
+  const getCell=(i,j)=>rows[i+1].querySelectorAll('td')[j];
+  const d=Math.max(40,300-W*10);
+  for(let i=1;i<=n;i++){
+    for(let w=0;w<=W;w++){
+      const item=items[i-1];
+      if(item.w>w)dp[i][w]=dp[i-1][w];
+      else dp[i][w]=Math.max(dp[i-1][w],dp[i-1][w-item.w]+item.v);
+      t.querySelectorAll('.active-cell').forEach(c=>c.classList.remove('active-cell'));
+      const cell=getCell(i,w);cell.textContent=dp[i][w];cell.classList.add('active-cell');
+      info.innerHTML=`<strong>Item ${i}</strong> (w=${item.w},v=${item.v}) cap=${w}: dp=${dp[i][w]}`;
+      await sleep(d);cell.classList.remove('active-cell');cell.classList.add('done-cell');
+    }
+  }
+  info.innerHTML='<strong>Max Value:</strong> <span class="acc">'+dp[n][W]+'</span> with capacity '+W;
+}
+
+// ════════════════════════════════════════
+//  N-QUEENS BACKTRACKING
+// ════════════════════════════════════════
+let nqStop=false;
+function stopNQ(){nqStop=true;}
+function buildBoard(n,queens,tryRow,tryCol,conflict){
+  const board=document.getElementById('nq-board');
+  board.innerHTML='';board.style.setProperty('--nq-size',n);
+  for(let r=0;r<n;r++){
+    const row=document.createElement('div');row.className='nq-row';
+    for(let c=0;c<n;c++){
+      const cell=document.createElement('div');
+      const light=(r+c)%2===0;cell.className='nq-cell '+(light?'nq-light':'nq-dark');
+      if(queens[r]===c){cell.textContent='♛';cell.classList.add('nq-queen');}
+      else if(r===tryRow&&c===tryCol){cell.classList.add('nq-try');}
+      else if(conflict&&isConflict(queens,r,c,queens)){cell.classList.add('nq-conflict');}
+      row.appendChild(cell);
+    }
+    board.appendChild(row);
+  }
+}
+function isConflict(queens,row,col){
+  for(let r=0;r<row;r++){
+    if(queens[r]===col)return true;
+    if(Math.abs(queens[r]-col)===Math.abs(r-row))return true;
+  }
+  return false;
+}
+async function runNQueens(){
+  const n=parseInt(document.getElementById('nq-n').value);
+  nqStop=false;
+  document.getElementById('nq-info').textContent='Solving '+n+'-Queens...';
+  const queens=new Array(n).fill(-1);
+  const d=Math.max(60,500-n*30);
+  async function solve(row){
+    if(nqStop)return false;
+    if(row===n){buildBoard(n,queens,[],[],false);return true;}
+    for(let col=0;col<n;col++){
+      if(nqStop)return false;
+      if(!isConflict(queens,row,col)){
+        queens[row]=col;buildBoard(n,queens,row,col,false);
+        document.getElementById('nq-info').textContent='Placing queen at row '+row+', col '+col;
+        await sleep(d);
+        if(await solve(row+1))return true;
+        queens[row]=-1;buildBoard(n,queens,row,col,true);
+        document.getElementById('nq-info').textContent='Backtrack from row '+row+', col '+col;
+        await sleep(d*.7);
+      }
+    }
+    return false;
+  }
+  const solved=await solve(0);
+  document.getElementById('nq-info').innerHTML=solved?'<strong style="color:var(--accent3)">Solved! '+n+'-Queens placed successfully.</strong>':'<span style="color:var(--accent2)">No solution found.</span>';
+}
+
+// ════════════════════════════════════════
+//  GRAPH COLORING BACKTRACKING
+// ════════════════════════════════════════
+let gcStop=false;
+function stopGC(){gcStop=true;}
+const GC_COLORS_LIST=['#ff6b35','#00d4ff','#39ff14','#bf5fff','#ffd700'];
+// Graph: 7 vertices petersen-like
+const gcAdj=[[1,2,3],[0,4,5],[0,4,6],[0,5,6],[1,2],[1,3],[2,3]];
+const gcPos=[[260,50],[80,130],[440,130],[150,260],[380,260],[80,260],[440,260]];
+function initGCCanvas(){
+  const canvas=document.getElementById('gc-canvas');
+  const W=canvas.parentElement.offsetWidth||520;canvas.width=W;
+  drawGCGraph(new Array(gcAdj.length).fill(-1));
+}
+function drawGCGraph(colors){
+  const canvas=document.getElementById('gc-canvas');
+  const ctx=canvas.getContext('2d');const W=canvas.width,H=300;
+  ctx.clearRect(0,0,W,H);
+  const scaleX=W/520;
+  // edges
+  for(let u=0;u<gcAdj.length;u++){
+    for(const v of gcAdj[u]){
+      if(v>u){
+        ctx.beginPath();ctx.moveTo(gcPos[u][0]*scaleX,gcPos[u][1]);ctx.lineTo(gcPos[v][0]*scaleX,gcPos[v][1]);
+        ctx.strokeStyle='rgba(90,112,128,0.5)';ctx.lineWidth=2;ctx.stroke();
+      }
+    }
+  }
+  // nodes
+  for(let i=0;i<gcAdj.length;i++){
+    const x=gcPos[i][0]*scaleX,y=gcPos[i][1];
+    const col=colors[i]>=0?GC_COLORS_LIST[colors[i]]:'#1a3a5c';
+    ctx.beginPath();ctx.arc(x,y,22,0,Math.PI*2);ctx.fillStyle=col;ctx.fill();
+    ctx.strokeStyle=colors[i]>=0?col:'#3a4a5c';ctx.lineWidth=2;ctx.stroke();
+    ctx.fillStyle='#fff';ctx.font='bold 13px JetBrains Mono,monospace';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(i,x,y);
+    if(colors[i]>=0){ctx.fillStyle='rgba(255,255,255,0.7)';ctx.font='10px JetBrains Mono,monospace';ctx.fillText('C'+(colors[i]+1),x,y+14);}
+  }
+}
+function gcIsSafe(colors,node,color){
+  for(const nb of gcAdj[node])if(colors[nb]===color)return false;
+  return true;
+}
+async function runGraphColoring(){
+  const numColors=parseInt(document.getElementById('gc-colors').value);gcStop=false;
+  const colors=new Array(gcAdj.length).fill(-1);
+  const info=document.getElementById('gc-info');
+  info.textContent='Graph coloring with '+numColors+' colors...';
+  async function solve(node){
+    if(gcStop)return false;
+    if(node===gcAdj.length)return true;
+    for(let c=0;c<numColors;c++){
+      if(gcStop)return false;
+      if(gcIsSafe(colors,node,c)){
+        colors[node]=c;drawGCGraph([...colors]);
+        info.innerHTML='Trying node '+node+' with <span style="color:'+GC_COLORS_LIST[c]+'">Color '+(c+1)+'</span>';
+        await sleep(400);
+        if(await solve(node+1))return true;
+        colors[node]=-1;drawGCGraph([...colors]);
+        info.innerHTML='Backtrack node '+node;
+        await sleep(250);
+      }
+    }
+    return false;
+  }
+  const ok=await solve(0);
+  drawGCGraph([...colors]);
+  info.innerHTML=ok?'<strong style="color:var(--accent3)">Solved with '+numColors+' colors!</strong>':'<span style="color:var(--accent2)">Not colorable with '+numColors+' colors.</span>';
+}
+
+// ════════════════════════════════════════
+//  GRAPH SECTION — shared graph structure
+// ════════════════════════════════════════
+// Undirected graph for BFS/DFS: 7 nodes
+const GRAPH_NODES=7;
+const GRAPH_ADJ_UD=[[1,2],[0,3,4],[0,4,5],[1,6],[1,2,6],[2],[3,4]];
+const GRAPH_POS_UD=[[300,50],[140,140],[460,140],[80,260],[300,240],[540,240],[300,360]];
+
+// DAG for topo
+const DAG_ADJ=[[1,2],[3],[3,4],[5],[5],[],[]];
+const DAG_LABELS=['A','B','C','D','E','F','G'];
+const DAG_POS=[[80,50],[40,160],[200,160],[80,280],[300,280],[170,370],[380,370]];
+
+// Directed for SCC (Kosaraju)
+const SCC_ADJ=[[1],[2],[0,3],[4],[5],[3],[7],[6]];
+const SCC_POS=[[60,70],[180,70],[300,70],[420,70],[420,200],[300,200],[180,200],[60,200]];
+
+function initGraphCanvases(){
+  resizeCanvas('bfs-canvas',GRAPH_POS_UD);
+  resizeCanvas('dfs-canvas',GRAPH_POS_UD);
+  resizeCanvas('topo-canvas',DAG_POS);
+  resizeCanvas('scc-canvas',SCC_POS);
+  resizeCanvas('flow-canvas',null);
+  drawGraphUD('bfs-canvas',new Array(GRAPH_NODES).fill('default'),[],'BFS — Click Run to start');
+  drawGraphUD('dfs-canvas',new Array(GRAPH_NODES).fill('default'),[],'DFS — Click Run to start');
+  drawDAG('topo-canvas',new Array(DAG_LABELS.length).fill('default'),[]);
+  drawSCCGraph('scc-canvas',new Array(8).fill('default'),[]);
+  drawFlowGraph([]);
+  initFloydTable();
+}
+
+function resizeCanvas(id,pos){
+  const c=document.getElementById(id);if(!c)return;
+  const W=c.parentElement.offsetWidth||600;c.width=W;
+}
+
+const NODE_COLORS={default:'#1a3a5c',visited:'rgba(0,212,255,0.25)',current:'rgba(255,107,53,0.3)',done:'rgba(57,255,20,0.2)',source:'rgba(191,95,255,0.25)',sink:'rgba(255,215,0,0.2)'};
+const NODE_STROKES={default:'#3a4a5c',visited:'#00d4ff',current:'#ff6b35',done:'#39ff14',source:'#bf5fff',sink:'#ffd700'};
+
+function drawGraphBase(ctx,W,H,positions,adj,nodeStates,edgeHighlight,directed=false,labels=null,edgeLabels=null){
+  ctx.clearRect(0,0,W,H);
+  const scX=W/600,scY=H/400;
+  const scP=pos=>[pos[0]*scX,pos[1]*scY+(H-400*scY)/2+10];
+  // draw edges
+  for(let u=0;u<adj.length;u++){
+    for(const v of adj[u]){
+      if(!directed&&v<u)continue;
+      const [x1,y1]=scP(positions[u]);const [x2,y2]=scP(positions[v]);
+      const isHL=edgeHighlight.some(e=>(e[0]===u&&e[1]===v)||(e[0]===v&&e[1]===u&&!directed));
+      ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);
+      ctx.strokeStyle=isHL?'#00d4ff':'rgba(90,112,128,0.4)';ctx.lineWidth=isHL?2.5:1.5;ctx.stroke();
+      if(directed){
+        // arrowhead
+        const angle=Math.atan2(y2-y1,x2-x1);const r=22;
+        const ax=x2-r*Math.cos(angle),ay=y2-r*Math.sin(angle);
+        ctx.beginPath();ctx.moveTo(ax,ay);
+        ctx.lineTo(ax-8*Math.cos(angle-0.4),ay-8*Math.sin(angle-0.4));
+        ctx.lineTo(ax-8*Math.cos(angle+0.4),ay-8*Math.sin(angle+0.4));
+        ctx.closePath();ctx.fillStyle=isHL?'#00d4ff':'rgba(90,112,128,0.4)';ctx.fill();
+      }
+      if(edgeLabels&&edgeLabels[u+'_'+v]!==undefined){
+        const mx=(x1+x2)/2,my=(y1+y2)/2;
+        ctx.fillStyle='#ffd700';ctx.font='bold 11px JetBrains Mono,monospace';ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.fillText(edgeLabels[u+'_'+v],mx,my-8);
+      }
+    }
+  }
+  // draw nodes
+  for(let i=0;i<positions.length;i++){
+    const [x,y]=scP(positions[i]);const st=nodeStates[i]||'default';
+    ctx.beginPath();ctx.arc(x,y,20,0,Math.PI*2);
+    ctx.fillStyle=NODE_COLORS[st]||'#1a3a5c';ctx.fill();
+    ctx.strokeStyle=NODE_STROKES[st]||'#3a4a5c';ctx.lineWidth=2;ctx.stroke();
+    ctx.fillStyle=NODE_STROKES[st]||'#c9d5e0';ctx.font='bold 13px JetBrains Mono,monospace';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(labels?labels[i]:i,x,y);
+  }
+}
+
+function drawGraphUD(canvasId,states,edgeHL,statusText){
+  const c=document.getElementById(canvasId);if(!c)return;
+  const ctx=c.getContext('2d');const W=c.width,H=c.height;
+  drawGraphBase(ctx,W,H,GRAPH_POS_UD,GRAPH_ADJ_UD,states,edgeHL,false);
+  if(statusText){ctx.fillStyle='rgba(90,112,128,0.8)';ctx.font='12px JetBrains Mono,monospace';ctx.textAlign='left';ctx.textBaseline='top';ctx.fillText(statusText,10,10);}
+}
+
+// ── BFS ──
+async function runBFS(){
+  const start=parseInt(document.getElementById('bfs-start').value);
+  const states=new Array(GRAPH_NODES).fill('default');
+  const visited=new Array(GRAPH_NODES).fill(false);
+  const edgeHL=[];const info=document.getElementById('bfs-info');
+  const queue=[start];visited[start]=true;states[start]='current';
+  drawGraphUD('bfs-canvas',states,edgeHL,'BFS from node '+start);
+  const order=[];
+  const d=400;
+  while(queue.length){
+    const u=queue.shift();order.push(u);states[u]='current';
+    drawGraphUD('bfs-canvas',[...states],edgeHL,'Processing node '+u);
+    info.innerHTML='<strong>BFS Queue:</strong> ['+queue.join(', ')+']  |  <strong>Visited:</strong> ['+order.join(' → ')+']';
+    await sleep(d);
+    for(const v of GRAPH_ADJ_UD[u]){
+      if(!visited[v]){
+        visited[v]=true;states[v]='visited';queue.push(v);
+        edgeHL.push([u,v]);
+        drawGraphUD('bfs-canvas',[...states],[...edgeHL],'Found neighbor '+v+' from '+u);
+        await sleep(d*.6);
+      }
+    }
+    states[u]='done';drawGraphUD('bfs-canvas',[...states],[...edgeHL],'Node '+u+' done');await sleep(d*.4);
+  }
+  info.innerHTML='<strong>BFS Order:</strong> <span style="color:var(--accent3)">'+order.join(' → ')+'</span>';
+}
+
+// ── DFS ──
+async function runDFS(){
+  const start=parseInt(document.getElementById('dfs-start').value);
+  const states=new Array(GRAPH_NODES).fill('default');
+  const visited=new Array(GRAPH_NODES).fill(false);
+  const edgeHL=[];const info=document.getElementById('dfs-info');
+  const order=[];const d=450;
+  async function dfs(u){
+    visited[u]=true;states[u]='current';order.push(u);
+    drawGraphUD('dfs-canvas',[...states],[...edgeHL],'Visiting node '+u);
+    info.innerHTML='<strong>DFS Stack exploring:</strong> '+u+'  |  <strong>Order:</strong> ['+order.join(' → ')+']';
+    await sleep(d);
+    for(const v of GRAPH_ADJ_UD[u]){
+      if(!visited[v]){edgeHL.push([u,v]);states[v]='visited';drawGraphUD('dfs-canvas',[...states],[...edgeHL],'Go deep: '+u+' → '+v);await sleep(d*.5);await dfs(v);}
+    }
+    states[u]='done';drawGraphUD('dfs-canvas',[...states],[...edgeHL],'Backtrack from '+u);await sleep(d*.4);
+  }
+  await dfs(start);
+  info.innerHTML='<strong>DFS Order:</strong> <span style="color:var(--accent3)">'+order.join(' → ')+'</span>';
+}
+
+// ── TOPO ──
+function drawDAG(canvasId,states,edgeHL){
+  const c=document.getElementById(canvasId);if(!c)return;
+  const ctx=c.getContext('2d');const W=c.width,H=c.height;
+  drawGraphBase(ctx,W,H,DAG_POS,DAG_ADJ,states,edgeHL,true,DAG_LABELS);
+}
+async function runTopo(){
+  const n=DAG_LABELS.length;const states=new Array(n).fill('default');
+  const inDeg=new Array(n).fill(0);
+  for(let u=0;u<n;u++)for(const v of DAG_ADJ[u])inDeg[v]++;
+  const queue=[];for(let i=0;i<n;i++)if(inDeg[i]===0)queue.push(i);
+  const order=[];const info=document.getElementById('topo-info');const d=500;
+  while(queue.length){
+    const u=queue.shift();order.push(u);states[u]='current';
+    drawDAG('topo-canvas',[...states],[]);
+    info.innerHTML='<strong>Processing:</strong> '+DAG_LABELS[u]+'  |  <strong>Order so far:</strong> '+order.map(i=>DAG_LABELS[i]).join(' → ');
+    await sleep(d);
+    for(const v of DAG_ADJ[u]){inDeg[v]--;if(inDeg[v]===0){queue.push(v);states[v]='visited';}}
+    states[u]='done';drawDAG('topo-canvas',[...states],[]);await sleep(d*.4);
+  }
+  info.innerHTML='<strong>Topological Order:</strong> <span style="color:var(--accent3)">'+order.map(i=>DAG_LABELS[i]).join(' → ')+'</span>';
+}
+
+// ── SCC ──
+function drawSCCGraph(canvasId,states,edgeHL,sccColors){
+  const c=document.getElementById(canvasId);if(!c)return;
+  const ctx=c.getContext('2d');const W=c.width,H=c.height;
+  // custom draw with SCC component colors
+  ctx.clearRect(0,0,W,H);
+  const scX=W/500,scY=H/320;
+  const scP=pos=>[pos[0]*scX+20,pos[1]*scY+20];
+  const compCols=['rgba(0,212,255,0.25)','rgba(57,255,20,0.2)','rgba(191,95,255,0.2)','rgba(255,215,0,0.15)','rgba(255,107,53,0.2)'];
+  const compStr=['#00d4ff','#39ff14','#bf5fff','#ffd700','#ff6b35'];
+  for(let u=0;u<SCC_ADJ.length;u++){
+    for(const v of SCC_ADJ[u]){
+      const [x1,y1]=scP(SCC_POS[u]);const [x2,y2]=scP(SCC_POS[v]);
+      const isHL=edgeHL.some(e=>e[0]===u&&e[1]===v);
+      ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);
+      ctx.strokeStyle=isHL?'#00d4ff':'rgba(90,112,128,0.4)';ctx.lineWidth=isHL?2.5:1.5;ctx.stroke();
+      const angle=Math.atan2(y2-y1,x2-x1),r=20;
+      const ax=x2-r*Math.cos(angle),ay=y2-r*Math.sin(angle);
+      ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(ax-7*Math.cos(angle-0.4),ay-7*Math.sin(angle-0.4));ctx.lineTo(ax-7*Math.cos(angle+0.4),ay-7*Math.sin(angle+0.4));ctx.closePath();ctx.fillStyle=isHL?'#00d4ff':'rgba(90,112,128,0.35)';ctx.fill();
+    }
+  }
+  for(let i=0;i<SCC_POS.length;i++){
+    const [x,y]=scP(SCC_POS[i]);const comp=sccColors&&sccColors[i];
+    ctx.beginPath();ctx.arc(x,y,20,0,Math.PI*2);
+    ctx.fillStyle=comp!==undefined?compCols[comp%5]:(NODE_COLORS[states[i]]||'#1a3a5c');ctx.fill();
+    ctx.strokeStyle=comp!==undefined?compStr[comp%5]:(NODE_STROKES[states[i]]||'#3a4a5c');ctx.lineWidth=2;ctx.stroke();
+    ctx.fillStyle=comp!==undefined?compStr[comp%5]:NODE_STROKES[states[i]]||'#c9d5e0';
+    ctx.font='bold 12px JetBrains Mono,monospace';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(i,x,y);
+  }
+}
+async function runSCC(){
+  const n=SCC_ADJ.length;const info=document.getElementById('scc-info');
+  const visited=new Array(n).fill(false);const finish=[];
+  const states=new Array(n).fill('default');
+  // Pass 1: DFS finish order
+  async function dfs1(u){
+    visited[u]=true;states[u]='visited';drawSCCGraph('scc-canvas',[...states],[],null);await sleep(300);
+    for(const v of SCC_ADJ[u])if(!visited[v])await dfs1(v);
+    finish.push(u);states[u]='done';
+  }
+  info.textContent='Pass 1: DFS finish order...';
+  for(let i=0;i<n;i++)if(!visited[i])await dfs1(i);
+  // Build transpose
+  const trans=Array.from({length:n},()=>[]);for(let u=0;u<n;u++)for(const v of SCC_ADJ[u])trans[v].push(u);
+  // Pass 2: DFS on transpose in reverse finish order
+  const comp=new Array(n).fill(-1);let compId=0;
+  const visited2=new Array(n).fill(false);
+  async function dfs2(u,c){
+    visited2[u]=true;comp[u]=c;
+    for(const v of trans[u])if(!visited2[v])await dfs2(v,c);
+  }
+  info.textContent='Pass 2: DFS on transposed graph...';
+  for(let i=finish.length-1;i>=0;i--){
+    const u=finish[i];
+    if(!visited2[u]){await dfs2(u,compId);drawSCCGraph('scc-canvas',new Array(n).fill('default'),[],[...comp]);await sleep(400);compId++;}
+  }
+  const groups={};for(let i=0;i<n;i++){if(!groups[comp[i]])groups[comp[i]]=[];groups[comp[i]].push(i);}
+  const sccList=Object.values(groups).map(g=>'{ '+g.join(', ')+' }').join(' | ');
+  drawSCCGraph('scc-canvas',new Array(n).fill('default'),[],[...comp]);
+  info.innerHTML='<strong>SCCs Found ('+compId+'):</strong> <span style="color:var(--accent3)">'+sccList+'</span>';
+}
+
+// ── FLOYD-WARSHALL ──
+const FW_N=5;
+const FW_INF=999;
+const FW_GRAPH=[
+  [0,3,FW_INF,7,FW_INF],
+  [8,0,2,FW_INF,FW_INF],
+  [5,FW_INF,0,1,FW_INF],
+  [2,FW_INF,FW_INF,0,4],
+  [FW_INF,FW_INF,FW_INF,1,0]
+];
+function initFloydTable(){
+  const t=document.getElementById('floyd-table');if(!t)return;
+  const labs=['A','B','C','D','E'];
+  let html='<tr><th></th>'+labs.map(l=>'<th>'+l+'</th>').join('')+'</tr>';
+  for(let i=0;i<FW_N;i++){
+    html+='<tr><th>'+labs[i]+'</th>'+FW_GRAPH[i].map(v=>'<td style="color:var(--text-dim)">'+(v===FW_INF?'∞':v)+'</td>').join('')+'</tr>';
+  }
+  t.innerHTML=html;
+}
+async function runFloyd(){
+  const dist=FW_GRAPH.map(r=>[...r]);const labs=['A','B','C','D','E'];
+  const t=document.getElementById('floyd-table');const info=document.getElementById('floyd-info');
+  const d=200;
+  function rebuildTable(ki,ii,jj){
+    let html='<tr><th></th>'+labs.map(l=>'<th>'+l+'</th>').join('')+'</tr>';
+    for(let i=0;i<FW_N;i++){
+      html+='<tr><th>'+labs[i]+'</th>'+dist[i].map((v,j)=>{
+        let cls='';if(i===ii&&j===jj)cls='active-cell';else if(i===ki||j===ki)cls='highlight-cell';
+        return '<td class="'+cls+'">'+(v===FW_INF?'∞':v)+'</td>';
+      }).join('')+'</tr>';
+    }
+    t.innerHTML=html;
+  }
+  for(let k=0;k<FW_N;k++){
+    for(let i=0;i<FW_N;i++){
+      for(let j=0;j<FW_N;j++){
+        const through=dist[i][k]+dist[k][j];
+        if(dist[i][j]>through){dist[i][j]=through;}
+        rebuildTable(k,i,j);
+        info.innerHTML=`<strong>k=${labs[k]}, i=${labs[i]}, j=${labs[j]}:</strong> dist[${labs[i]}][${labs[j]}] via ${labs[k]} = ${dist[i][k]===FW_INF?'∞':dist[i][k]}+${dist[k][j]===FW_INF?'∞':dist[k][j]} = <span class="acc">${dist[i][j]===FW_INF?'∞':dist[i][j]}</span>`;
+        await sleep(d);
+      }
+    }
+  }
+  info.innerHTML='<strong>All-pairs shortest paths computed.</strong> Matrix shows minimum distances between every pair of vertices.';
+}
+
+// ── FORD-FULKERSON ──
+// Flow network: 6 nodes (S=0, T=5)
+const FF_N=6;
+const FF_CAP=[
+  [0,16,13,0,0,0],
+  [0,0,10,12,0,0],
+  [0,4,0,0,14,0],
+  [0,0,9,0,0,20],
+  [0,0,0,7,0,4],
+  [0,0,0,0,0,0]
+];
+const FF_POS=[[60,150],[180,60],[180,240],[320,60],[320,240],[440,150]];
+const FF_LABELS=['S','1','2','3','4','T'];
+let ffFlow=[];
+function initFF(){ffFlow=FF_CAP.map(r=>r.map(()=>0));}
+function drawFlowGraph(edgeHL){
+  const canvas=document.getElementById('flow-canvas');if(!canvas)return;
+  const W=canvas.parentElement.offsetWidth||600;canvas.width=W;
+  const ctx=canvas.getContext('2d');const H=340;ctx.clearRect(0,0,W,H);
+  const scX=W/520,scY=H/330;
+  const scP=pos=>[pos[0]*scX+10,pos[1]*scY+20];
+  for(let u=0;u<FF_N;u++){
+    for(let v=0;v<FF_N;v++){
+      if(FF_CAP[u][v]>0){
+        const [x1,y1]=scP(FF_POS[u]);const [x2,y2]=scP(FF_POS[v]);
+        const isHL=edgeHL.some(e=>e[0]===u&&e[1]===v);
+        const cap=FF_CAP[u][v],fl=ffFlow[u][v]||0;
+        ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);
+        ctx.strokeStyle=isHL?'#00d4ff':(fl>0?'rgba(57,255,20,0.5)':'rgba(90,112,128,0.4)');
+        ctx.lineWidth=isHL?3:(fl>0?2.5:1.5);ctx.stroke();
+        const angle=Math.atan2(y2-y1,x2-x1),r=22;
+        const ax=x2-r*Math.cos(angle),ay=y2-r*Math.sin(angle);
+        ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(ax-9*Math.cos(angle-0.4),ay-9*Math.sin(angle-0.4));ctx.lineTo(ax-9*Math.cos(angle+0.4),ay-9*Math.sin(angle+0.4));ctx.closePath();ctx.fillStyle=isHL?'#00d4ff':(fl>0?'rgba(57,255,20,0.6)':'rgba(90,112,128,0.4)');ctx.fill();
+        const mx=(x1+x2)/2,my=(y1+y2)/2;
+        ctx.fillStyle=isHL?'#fff':'#ffd700';ctx.font='bold 11px JetBrains Mono,monospace';ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.fillText(fl+'/'+cap,mx,my-10);
+      }
+    }
+  }
+  for(let i=0;i<FF_N;i++){
+    const [x,y]=scP(FF_POS[i]);
+    const isS=i===0,isT=i===FF_N-1;
+    ctx.beginPath();ctx.arc(x,y,22,0,Math.PI*2);
+    ctx.fillStyle=isS?'rgba(191,95,255,0.25)':isT?'rgba(255,215,0,0.2)':'rgba(0,212,255,0.1)';ctx.fill();
+    ctx.strokeStyle=isS?'#bf5fff':isT?'#ffd700':'#00d4ff';ctx.lineWidth=2.5;ctx.stroke();
+    ctx.fillStyle=isS?'#bf5fff':isT?'#ffd700':'#00d4ff';ctx.font='bold 13px JetBrains Mono,monospace';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(FF_LABELS[i],x,y);
+  }
+}
+function ffBFS(source,sink,parent){
+  const visited=new Array(FF_N).fill(false);const q=[source];visited[source]=true;
+  while(q.length){
+    const u=q.shift();
+    for(let v=0;v<FF_N;v++){
+      if(!visited[v]&&FF_CAP[u][v]-ffFlow[u][v]>0){
+        parent[v]=u;visited[v]=true;if(v===sink)return true;q.push(v);
+      }
+    }
+  }
+  return false;
+}
+async function runFordFulkerson(){
+  initFF();let maxFlow=0;const info=document.getElementById('flow-info');
+  drawFlowGraph([]);info.textContent='Finding augmenting paths...';
+  const d=600;
+  const parent=new Array(FF_N).fill(-1);
+  while(ffBFS(0,FF_N-1,parent)){
+    let pathFlow=Infinity,v=FF_N-1;
+    while(v!==0){const u=parent[v];pathFlow=Math.min(pathFlow,FF_CAP[u][v]-ffFlow[u][v]);v=u;}
+    // trace path for highlight
+    const hl=[];v=FF_N-1;
+    while(v!==0){const u=parent[v];hl.push([u,v]);v=u;}
+    drawFlowGraph(hl);
+    info.innerHTML='<strong>Augmenting path found, bottleneck = '+pathFlow+'</strong>';
+    await sleep(d);
+    v=FF_N-1;
+    while(v!==0){const u=parent[v];ffFlow[u][v]+=pathFlow;ffFlow[v][u]-=pathFlow;v=u;}
+    maxFlow+=pathFlow;
+    drawFlowGraph([]);info.innerHTML='<strong>Max Flow so far: <span style="color:var(--accent3)">'+maxFlow+'</span></strong>';
+    await sleep(d*.6);
+    parent.fill(-1);
+  }
+  drawFlowGraph([]);
+  info.innerHTML='<strong>Max Flow = <span style="color:var(--accent3)">'+maxFlow+'</span></strong> (by Max-Flow Min-Cut Theorem, minimum cut capacity = '+maxFlow+')';
+}
+
+// ── Window resize ──
+window.addEventListener('resize',()=>{
+  drawFibTree();
+  initGraphCanvases();
+  initGCCanvas();
+});
 </script>
 </body>
 </html>
